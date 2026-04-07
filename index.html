@@ -359,6 +359,68 @@
       background-color: rgba(144, 210, 144, 0.4);
       color: #ffffff;
     }
+
+    /* ---- MOBILE RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .landing canvas {
+        max-width: 85%;
+        max-height: 50vh;
+      }
+
+      .name-link {
+        font-size: clamp(1.2rem, 10vw, 4rem);
+      }
+
+      .menu-wrapper {
+        left: 1.5rem;
+        bottom: 1rem;
+      }
+
+      .menu-trigger {
+        font-size: 1.8rem;
+        height: 1.4rem;
+      }
+
+      .menu-dropdown a {
+        font-size: 1.3rem;
+      }
+
+      .name-header {
+        padding-top: 1rem;
+        padding-right: 1rem;
+      }
+
+      .name-header-text {
+        font-size: 1.1rem;
+      }
+
+      .zora-grid {
+        width: 90vw !important;
+        grid-template-columns: repeat(12, 1fr) !important;
+      }
+
+      .zora-grid a {
+        grid-column: span 2 !important;
+      }
+
+      #rogue-grid {
+        width: 85vw !important;
+      }
+
+      #untitled-canvas {
+        max-width: 70vw !important;
+        max-height: 55vh !important;
+      }
+
+      #cat-fixed {
+        right: 1.5rem !important;
+        bottom: 0.5rem !important;
+      }
+
+      #cat-display {
+        font-size: 1.5px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -390,9 +452,9 @@
   <section class="video-page" id="cat-page" style="position:relative;overflow:hidden;">
     <span style="position:absolute;top:1.5rem;left:2rem;font-family:'Helvetica Neue','Arial',sans-serif;font-size:20vw;font-weight:700;letter-spacing:-0.03em;line-height:0.85;color:#ffffff;pointer-events:none;white-space:nowrap;">videos</span>
     <nav class="video-list" id="video-list" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:2;position:relative;">
-      <a href="#" id="zora-link" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">zora</a>
-      <a href="#" id="rogue-link" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">rogue</a>
-      <a href="#" id="untitled-link" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">[untitled]</a>
+      <a href="#" id="zora-link" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">zora</a>
+      <a href="#" id="rogue-link" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">rogue</a>
+      <a href="#" id="untitled-link" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">[untitled]</a>
     </nav>
     <div class="zora-view" id="zora-view" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.6s ease;">
       <div class="zora-grid" id="zora-grid" style="position:static;top:auto;left:auto;transform:none;opacity:1;"></div>
@@ -415,12 +477,12 @@
   <section class="production-page" id="production-page" style="position:relative;overflow:hidden;width:100%;min-height:100vh;background:#FDF3CD;display:flex;align-items:center;justify-content:center;">
     <span style="position:absolute;top:1.5rem;left:2rem;font-family:'Helvetica Neue','Arial',sans-serif;font-size:13vw;font-weight:700;letter-spacing:-0.03em;line-height:0.85;color:#0a0a0a;pointer-events:none;white-space:nowrap;">production</span>
     <nav class="production-list" id="production-list" style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:2;position:relative;">
-      <a href="#" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">judah weston</a>
-      <a href="#" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">lexa gates</a>
-      <a href="#" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">max evasion</a>
-      <a href="#" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">andre lawrence</a>
-      <a href="#" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">lord sko</a>
-      <a href="#" style="display:inline-block;font-size:3.4rem;font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">nostrings</a>
+      <a href="#" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">judah weston</a>
+      <a href="#" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">lexa gates</a>
+      <a href="#" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">max evasion</a>
+      <a href="#" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">andre lawrence</a>
+      <a href="#" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">lord sko</a>
+      <a href="#" style="display:inline-block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:700;color:#0a0a0a;text-decoration:none;letter-spacing:-0.03em;line-height:0.85;padding:0.05em 0;transition:color 0.3s ease,background-color 0.3s ease;">nostrings</a>
     </nav>
     <p style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'Helvetica Neue','Arial',sans-serif;font-size:1.2rem;font-weight:500;letter-spacing:-0.03em;color:#0a0a0a;opacity:0.5;">work in progress...</p>
   </section>
@@ -441,7 +503,7 @@
 
   <!-- CONTACT PAGE -->
   <section id="contact-page" style="position:relative;width:100%;min-height:100vh;background:#837278;display:flex;align-items:center;justify-content:center;">
-    <a href="mailto:kianludwig33@gmail.com" style="font-family:'Helvetica Neue','Arial',sans-serif;font-size:3.4rem;font-weight:700;letter-spacing:-0.03em;color:#ffffff;text-decoration:none;transition:opacity 0.3s ease;">kianludwig33@gmail.com</a>
+    <a href="mailto:kianludwig33@gmail.com" style="font-family:'Helvetica Neue','Arial',sans-serif;font-size:clamp(1.4rem,5vw,3.4rem);font-weight:700;letter-spacing:-0.03em;color:#ffffff;text-decoration:none;transition:opacity 0.3s ease;">kianludwig33@gmail.com</a>
   </section>
 
   <div id="cat-fixed" style="position:fixed;bottom:1rem;right:4rem;z-index:9999;">
