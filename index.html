@@ -72,6 +72,26 @@
       color: #f7f3c1;
     }
 
+    .copied-note {
+      color: #2fa84f;
+    }
+
+    .fade-in {
+      display: inline-block;
+      animation: fade-in 0.4s ease;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(3px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .loader {
       font-family: 'Courier New', Courier, monospace;
       font-weight: 700;
@@ -88,7 +108,7 @@
   <h1>*currently redesigning...</h1>
   <div class="loader" id="loader"></div>
   <nav>
-    <a href="mailto:kianludwig33@gmail.com">contact</a>
+    <a href="mailto:kianludwig33@gmail.com" id="contact">contact</a>
     <a href="https://www.instagram.com/our.zora" target="_blank" rel="noopener">@our.zora</a>
   </nav>
   <script>
@@ -111,6 +131,21 @@
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
+    })();
+
+    (function () {
+      const link = document.getElementById('contact');
+      const EMAIL = 'kianludwig33@gmail.com';
+      let timer;
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        navigator.clipboard && navigator.clipboard.writeText(EMAIL);
+        link.innerHTML = '<span class="copied-note fade-in">copied</span>';
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          link.innerHTML = '<span class="fade-in">contact</span>';
+        }, 2500);
+      });
     })();
   </script>
 </body>
