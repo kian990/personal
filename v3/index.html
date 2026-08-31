@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kian ludwig</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="../favicon.png">
+  <link rel="stylesheet" href="style.css?b=2">
+</head>
+<body>
+
+  <!-- fullscreen background video -->
+  <video id="bg" src="media/stringout1.mp4" autoplay loop playsinline preload="auto"></video>
+
+  <!-- overlay elements — each one is individual: positioned in style.css, drag them in edit mode (press E) -->
+  <div class="stage" id="stage">
+    <img class="el" id="k-lines"        src="media/overlay/k-lines.png"        alt="">
+    <img class="el" id="title-ian"      src="media/overlay/title-ian.png"      alt="ian">
+    <img class="el" id="title-ludwig"   src="media/overlay/title-ludwig.png"   alt="ludwig">
+    <img class="el" id="asterisks"      src="media/overlay/asterisks.png"      alt="">
+    <img class="el" id="page-pill"      src="media/overlay/page-pill.png"      alt="page_imagery.pol">
+    <img class="el" id="jp-subtitle"    src="media/overlay/jp-subtitle.png"    alt="私のホームページ">
+    <img class="el" id="exclusive-feed" src="media/overlay/exclusive-feed.png" alt="exclusive feed">
+    <img class="el" id="jp-vertical"    src="media/overlay/jp-vertical.png"    alt="">
+    <img class="el" id="newyork2"       src="media/overlay/newyork2.png"       alt="newyork2">
+    <img class="el" id="barcode"        src="media/overlay/barcode.png"        alt="">
+    <img class="el" id="star"           src="media/overlay/star.png"           alt="">
+    <img class="el" id="custom-bar"     src="media/overlay/custom-bar.png"     alt="custom_built_backgrounds.pol">
+  </div>
+
+  <!-- nav tree — right side, above everything -->
+  <nav class="tree" id="tree">
+    <ul>
+      <li class="branch done">
+        <span class="cat">[information]</span>
+        <ul>
+          <li><a href="#"><i>001 /</i> who_am_i though?</a></li>
+          <li><a href="https://www.linkedin.com/in/kianludwig" target="_blank" rel="noopener"><i>002 /</i> curriculum_vitae</a></li>
+        </ul>
+      </li>
+      <li class="branch wip">
+        <span class="cat">[imagery]</span>
+        <ul>
+          <li><a href="#"><i>003 /</i> visual_stimulants</a></li>
+          <li><a href="#"><i>004 /</i> cognitive_archive</a></li>
+        </ul>
+      </li>
+      <li class="branch wip">
+        <span class="cat">[work]</span>
+        <ul>
+          <li><a href="#"><i>005 /</i> editing_and_video</a></li>
+          <li><a href="#"><i>006 /</i> interviews</a></li>
+          <li><a href="#"><i>007 /</i> creative_production</a></li>
+          <li><a href="#"><i>008 /</i> events_and_spaces</a></li>
+        </ul>
+      </li>
+      <li class="branch wip">
+        <span class="cat">[sites]</span>
+        <ul>
+          <li><a href="https://5see.org" target="_blank" rel="noopener"><i>009 /</i> 5see.org</a></li>
+          <li><a href="#"><i>010 /</i> pixel8</a></li>
+          <li><a href="#"><i>011 /</i> socializing_bird</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <button id="sound" type="button">sound off</button>
+
+  <script src="main.js?b=2"></script>
+</body>
+</html>

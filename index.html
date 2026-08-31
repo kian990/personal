@@ -3,150 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kian Ludwig Mahd Soltani</title>
+  <title>kian ludwig mahd soltani</title>
+  <meta name="description" content="creative producer & editor — new york city">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-weight: 700;
-      background: #ffffff;
-      color: #000000;
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100svh;
-      text-align: center;
-      padding: 1.5rem;
-    }
-
-    .name {
-      position: absolute;
-      top: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-weight: 700;
-      font-size: clamp(1.7rem, 5.5vw, 3.9rem);
-      letter-spacing: -0.02em;
-      white-space: nowrap;
-    }
-
-    h1 {
-      font-weight: 700;
-      font-size: clamp(1.5rem, 5vw, 3.5rem);
-      letter-spacing: -0.02em;
-    }
-
-    nav {
-      margin-top: 1.25rem;
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-    }
-
-    nav a {
-      font-weight: 700;
-      font-size: clamp(1.15rem, 2.6vw, 1.5rem);
-      color: rgba(0, 0, 0, 0.8);
-      text-decoration: none;
-      padding: 0.08em 0.3em;
-      margin: -0.08em -0.3em;
-      border-radius: 2px;
-    }
-
-    nav a:hover {
-      background: #aed9ff;
-      color: #f7f3c1;
-    }
-
-    .copied-note {
-      color: #2fa84f;
-    }
-
-    .fade-in {
-      display: inline-block;
-      animation: fade-in 0.4s ease;
-    }
-
-    @keyframes fade-in {
-      from {
-        opacity: 0;
-        transform: translateY(3px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .loader {
-      font-family: 'Courier New', Courier, monospace;
-      font-weight: 700;
-      font-size: clamp(0.75rem, 1.6vw, 0.95rem);
-      color: rgba(0, 0, 0, 0.8);
-      margin-top: 1.1rem;
-      white-space: pre;
-      letter-spacing: 0.02em;
-    }
-  </style>
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="name">kian ludwig mahd soltani*</div>
-  <h1>*currently redesigning...</h1>
-  <div class="loader" id="loader"></div>
-  <nav>
-    <a href="mailto:kianludwig33@gmail.com" id="contact">contact</a>
-    <a href="https://www.instagram.com/our.zora" target="_blank" rel="noopener">@our.zora</a>
-  </nav>
-  <script>
-    (function () {
-      const el = document.getElementById('loader');
-      const WIDTH = 22;
-      const PARTIALS = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉'];
-      const CYCLE = 6000;
 
-      function frame(now) {
-        const t = (now % CYCLE) / CYCLE;
-        // ease-in-out so the fill breathes instead of marching linearly
-        const p = t < 0.85 ? (1 - Math.cos((t / 0.85) * Math.PI)) / 2 : 1;
-        const cells = p * WIDTH;
-        const full = Math.floor(cells);
-        const frac = Math.floor((cells - full) * 8);
-        let bar = '█'.repeat(full) + PARTIALS[frac];
-        bar += '░'.repeat(Math.max(0, WIDTH - bar.length));
-        el.textContent = '[' + bar + '] ' + String(Math.round(p * 99)).padStart(2, ' ') + '%';
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    })();
+  <header class="site-header">
+    <a class="wordmark" href="index.html">kian ludwig</a>
+    <nav class="site-nav">
+      <a class="nav-link" href="archive.html">archive</a>
+      <a class="nav-link" href="#contact">contact</a>
+    </nav>
+  </header>
 
-    (function () {
-      const link = document.getElementById('contact');
-      const EMAIL = 'kianludwig33@gmail.com';
-      let timer;
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-        navigator.clipboard && navigator.clipboard.writeText(EMAIL);
-        link.innerHTML = '<span class="copied-note fade-in">copied</span>';
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-          link.innerHTML = '<span class="fade-in">contact</span>';
-        }, 2500);
-      });
-    })();
-  </script>
+  <main>
+
+    <!-- hero — quiet, tiny, all air -->
+    <section class="hero">
+      <h1 class="hero-name" data-split>kian ludwig mahd soltani</h1>
+      <p class="hero-sub" data-split>creative producer &amp; editor</p>
+      <p class="hero-loc" data-split>new york city</p>
+      <p class="scroll-hint">( scroll )</p>
+    </section>
+
+    <!-- 01 · source material -->
+    <section class="piece">
+      <div class="media reveal">
+        <div class="card">
+          <p class="card-title">source material</p>
+          <p class="card-line">a figma original series</p>
+          <p class="card-line dim">coming 2026</p>
+        </div>
+      </div>
+      <div class="caption reveal">
+        <p class="cap-title"><span class="cap-num">01</span>source material</p>
+        <p class="cap-meta">figma · lead editor · 2026</p>
+      </div>
+    </section>
+
+    <!-- 02 · the zora interviews -->
+    <section class="piece">
+      <a class="media reveal" href="archive.html" aria-label="view the interview archive">
+        <div class="triptych" id="triptych">
+          <img loading="lazy" alt="">
+          <img loading="lazy" alt="">
+          <img loading="lazy" alt="">
+        </div>
+      </a>
+      <div class="caption reveal">
+        <p class="cap-title"><span class="cap-num">02</span>the zora interviews</p>
+        <p class="cap-meta">40+ conversations with artists &amp; internet people · shot, cut &amp; posted · 2025 — 26</p>
+        <a class="cap-link" href="archive.html">view the archive</a>
+      </div>
+    </section>
+
+    <!-- 03 · design -->
+    <section class="piece">
+      <div class="media reveal">
+        <div class="strip" id="designStrip"></div>
+      </div>
+      <div class="caption reveal">
+        <p class="cap-title"><span class="cap-num">03</span>design</p>
+        <p class="cap-meta">covers, flyers &amp; graphics · rogue garms &amp; friends · 2024 — 25</p>
+      </div>
+    </section>
+
+    <!-- 04 · 5see -->
+    <section class="piece">
+      <a class="media reveal" href="https://5see.org" target="_blank" rel="noopener">
+        <img class="single portrait" src="images/5see/5seelanding.jpg" loading="lazy" alt="5see.org landing page">
+      </a>
+      <div class="caption reveal">
+        <p class="cap-title"><span class="cap-num">04</span>5see.org</p>
+        <p class="cap-meta">an independent magazine &amp; internet social archive · founder, designer, developer</p>
+        <a class="cap-link" href="https://5see.org" target="_blank" rel="noopener">visit</a>
+      </div>
+    </section>
+
+    <!-- 05 · personal -->
+    <section class="piece">
+      <div class="media reveal">
+        <img class="single portrait" src="images/untitled/652743358_17859634380669300_6634669781551792480_n.jpg" loading="lazy" alt="">
+      </div>
+      <div class="caption reveal">
+        <p class="cap-title"><span class="cap-num">05</span>personal</p>
+        <p class="cap-meta">videos, photos &amp; experiments · ongoing</p>
+      </div>
+    </section>
+
+    <!-- more — the quiet index -->
+    <section class="more">
+      <p class="more-label reveal">more</p>
+      <ul class="more-list">
+        <li class="reveal"><span>asspizza × whop</span><span class="dim">video · 2025</span></li>
+        <li class="reveal"><span>lord sko</span><span class="dim">video &amp; design · ongoing</span></li>
+        <li class="reveal"><span>rogue garms</span><span class="dim">editor &amp; designer · 2024 — 25</span></li>
+        <li class="reveal"><span>pass the butter</span><span class="dim">producer · 2024</span></li>
+      </ul>
+    </section>
+
+    <!-- about -->
+    <section class="about">
+      <p class="about-text reveal">i produce, cut and shape things people actually watch — leading video at zora, editing figma's first original series, and building my own corners of the internet along the way.</p>
+    </section>
+
+    <!-- contact -->
+    <footer class="contact" id="contact">
+      <button class="email" id="email" type="button">kianludwig33@gmail.com</button>
+      <p class="email-hint">click to copy</p>
+      <nav class="foot-links">
+        <a class="nav-link" href="https://www.linkedin.com/in/kianludwig" target="_blank" rel="noopener">linkedin</a>
+      </nav>
+      <p class="colophon">kian ludwig mahd soltani · <span class="year"></span> · nyc</p>
+    </footer>
+
+  </main>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
