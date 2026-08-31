@@ -3,130 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kian ludwig mahd soltani</title>
-  <meta name="description" content="creative producer & editor — new york city">
+  <title>kian ludwig</title>
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
-  <script>document.documentElement.classList.add('js')</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="site-header">
-    <a class="wordmark" href="index.html">kian ludwig</a>
-    <nav class="site-nav">
-      <a class="nav-link" href="archive.html">archive</a>
-      <a class="nav-link" href="#contact">contact</a>
-    </nav>
-  </header>
+  <!-- fullscreen background video -->
+  <video id="bg" src="media/stringout1.mp4" autoplay loop playsinline preload="auto"></video>
 
-  <main>
+  <!-- overlay elements — each one is individual: positioned in style.css, drag them in edit mode (press E) -->
+  <div class="stage" id="stage">
+    <img class="el" id="k-lines"        src="media/overlay/k-lines.png"        alt="">
+    <img class="el" id="title-ian"      src="media/overlay/title-ian.png"      alt="ian">
+    <img class="el" id="title-ludwig"   src="media/overlay/title-ludwig.png"   alt="ludwig">
+    <img class="el" id="asterisks"      src="media/overlay/asterisks.png"      alt="">
+    <img class="el" id="page-pill"      src="media/overlay/page-pill.png"      alt="page_imagery.pol">
+    <img class="el" id="jp-subtitle"    src="media/overlay/jp-subtitle.png"    alt="私のホームページ">
+    <img class="el" id="exclusive-feed" src="media/overlay/exclusive-feed.png" alt="exclusive feed">
+    <img class="el" id="jp-vertical"    src="media/overlay/jp-vertical.png"    alt="">
+    <img class="el" id="newyork2"       src="media/overlay/newyork2.png"       alt="newyork2">
+    <img class="el" id="barcode"        src="media/overlay/barcode.png"        alt="">
+    <img class="el" id="star"           src="media/overlay/star.png"           alt="">
+    <img class="el" id="custom-bar"     src="media/overlay/custom-bar.png"     alt="custom_built_backgrounds.pol">
+  </div>
 
-    <!-- hero — quiet, tiny, all air -->
-    <section class="hero">
-      <h1 class="hero-name" data-split>kian ludwig mahd soltani</h1>
-      <p class="hero-sub" data-split>creative producer &amp; editor</p>
-      <p class="hero-loc" data-split>new york city</p>
-      <p class="scroll-hint">( scroll )</p>
-    </section>
+  <!-- nav tree — right side, above everything -->
+  <nav class="tree" id="tree">
+    <ul>
+      <li class="branch done">
+        <span class="cat">[information]</span>
+        <ul>
+          <li><a href="#"><i>001 /</i> who_am_i though?</a></li>
+          <li><a href="https://www.linkedin.com/in/kianludwig" target="_blank" rel="noopener"><i>002 /</i> curriculum_vitae</a></li>
+        </ul>
+      </li>
+      <li class="branch wip">
+        <span class="cat">[imagery]</span>
+        <ul>
+          <li><a href="#"><i>003 /</i> visual_stimulants</a></li>
+          <li><a href="#"><i>004 /</i> cognitive_archive</a></li>
+        </ul>
+      </li>
+      <li class="branch wip">
+        <span class="cat">[work]</span>
+        <ul>
+          <li><a href="#"><i>005 /</i> editing_and_video</a></li>
+          <li><a href="#"><i>006 /</i> interviews</a></li>
+          <li><a href="#"><i>007 /</i> creative_production</a></li>
+          <li><a href="#"><i>008 /</i> events_and_spaces</a></li>
+        </ul>
+      </li>
+      <li class="branch wip">
+        <span class="cat">[sites]</span>
+        <ul>
+          <li><a href="https://5see.org" target="_blank" rel="noopener"><i>009 /</i> 5see.org</a></li>
+          <li><a href="#"><i>010 /</i> pixel8</a></li>
+          <li><a href="#"><i>011 /</i> socializing_bird</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
 
-    <!-- 01 · source material -->
-    <section class="piece">
-      <div class="media reveal">
-        <div class="card">
-          <p class="card-title">source material</p>
-          <p class="card-line">a figma original series</p>
-          <p class="card-line dim">coming 2026</p>
-        </div>
-      </div>
-      <div class="caption reveal">
-        <p class="cap-title"><span class="cap-num">01</span>source material</p>
-        <p class="cap-meta">figma · lead editor · 2026</p>
-      </div>
-    </section>
+  <button id="sound" type="button">sound off</button>
 
-    <!-- 02 · the zora interviews -->
-    <section class="piece">
-      <a class="media reveal" href="archive.html" aria-label="view the interview archive">
-        <div class="triptych" id="triptych">
-          <img loading="lazy" alt="">
-          <img loading="lazy" alt="">
-          <img loading="lazy" alt="">
-        </div>
-      </a>
-      <div class="caption reveal">
-        <p class="cap-title"><span class="cap-num">02</span>the zora interviews</p>
-        <p class="cap-meta">40+ conversations with artists &amp; internet people · shot, cut &amp; posted · 2025 — 26</p>
-        <a class="cap-link" href="archive.html">view the archive</a>
-      </div>
-    </section>
-
-    <!-- 03 · design -->
-    <section class="piece">
-      <div class="media reveal">
-        <div class="strip" id="designStrip"></div>
-      </div>
-      <div class="caption reveal">
-        <p class="cap-title"><span class="cap-num">03</span>design</p>
-        <p class="cap-meta">covers, flyers &amp; graphics · rogue garms &amp; friends · 2024 — 25</p>
-      </div>
-    </section>
-
-    <!-- 04 · 5see -->
-    <section class="piece">
-      <a class="media reveal" href="https://5see.org" target="_blank" rel="noopener">
-        <img class="single portrait" src="images/5see/5seelanding.jpg" loading="lazy" alt="5see.org landing page">
-      </a>
-      <div class="caption reveal">
-        <p class="cap-title"><span class="cap-num">04</span>5see.org</p>
-        <p class="cap-meta">an independent magazine &amp; internet social archive · founder, designer, developer</p>
-        <a class="cap-link" href="https://5see.org" target="_blank" rel="noopener">visit</a>
-      </div>
-    </section>
-
-    <!-- 05 · personal -->
-    <section class="piece">
-      <div class="media reveal">
-        <img class="single portrait" src="images/untitled/652743358_17859634380669300_6634669781551792480_n.jpg" loading="lazy" alt="">
-      </div>
-      <div class="caption reveal">
-        <p class="cap-title"><span class="cap-num">05</span>personal</p>
-        <p class="cap-meta">videos, photos &amp; experiments · ongoing</p>
-      </div>
-    </section>
-
-    <!-- more — the quiet index -->
-    <section class="more">
-      <p class="more-label reveal">more</p>
-      <ul class="more-list">
-        <li class="reveal"><span>asspizza × whop</span><span class="dim">video · 2025</span></li>
-        <li class="reveal"><span>lord sko</span><span class="dim">video &amp; design · ongoing</span></li>
-        <li class="reveal"><span>rogue garms</span><span class="dim">editor &amp; designer · 2024 — 25</span></li>
-        <li class="reveal"><span>pass the butter</span><span class="dim">producer · 2024</span></li>
-      </ul>
-    </section>
-
-    <!-- about -->
-    <section class="about">
-      <p class="about-text reveal">i produce, cut and shape things people actually watch — leading video at zora, editing figma's first original series, and building my own corners of the internet along the way.</p>
-    </section>
-
-    <!-- contact -->
-    <footer class="contact" id="contact">
-      <button class="email" id="email" type="button">kianludwig33@gmail.com</button>
-      <p class="email-hint">click to copy</p>
-      <nav class="foot-links">
-        <a class="nav-link" href="https://www.linkedin.com/in/kianludwig" target="_blank" rel="noopener">linkedin</a>
-      </nav>
-      <p class="colophon">kian ludwig mahd soltani · <span class="year"></span> · nyc</p>
-    </footer>
-
-  </main>
-
-  <script type="module" src="js/main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
