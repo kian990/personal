@@ -727,7 +727,7 @@ const THEMES = [
     const theme = THEMES[i]
     try {
       const { tile, imgs } = await assetsFor(theme)
-      const dpr = Math.min(devicePixelRatio || 1, 1.5)
+      const dpr = Math.min(devicePixelRatio || 1, 2)   // match the page exactly, so nothing shifts when the canvas comes away
       const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
       fx.width = W; fx.height = H
       const scene = document.createElement('canvas'); scene.width = W; scene.height = H
@@ -736,7 +736,9 @@ const THEMES = [
       let pat = null
       if (tile) {
         pat = sctx.createPattern(tile, 'repeat')
-        pat.setTransform(new DOMMatrix().translate(W / 2, H / 2).scale((theme.tileSize * dpr) / tile.width))
+        // same placement as CSS `background-position: center`: a tile is centred on the screen
+        const ts = theme.tileSize * dpr
+        pat.setTransform(new DOMMatrix().translate(W / 2 - ts / 2, H / 2 - ts / 2).scale(ts / tile.width))
       }
       // same clock as the sheets' mosaic: a left→right sweep with noise, each cell popping in
       const cols = MOSAIC_COLS, rows = Math.max(1, Math.round(cols * (H / W)))

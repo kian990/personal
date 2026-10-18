@@ -32,7 +32,7 @@ body {
 body.themed #bg-image { opacity: 1; }
 /* per-theme colours for the live text (the nav tree); the overlays are recoloured PNGs */
 :root { --nav: #1a10d8; }
-body.theme-gingham-green { --nav: #328e13; }
+body.theme-gingham-green { --nav: #ffa6d9; }   /* the title's pink */
 body.themed #bg { opacity: 0; transition: none; }   /* the video keeps playing (it's the music) but is hidden */
 #theme-fx {
   position: fixed;
