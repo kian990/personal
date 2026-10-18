@@ -484,6 +484,7 @@ window.addEventListener('pointermove', (e) => {
   const star = $('star')
   const audio = $('ipod-audio')
   let tracks = []
+  let playlistName = 'playlist'
   let cur = 0        // the track on the Now Playing screen
   let pick = 0       // the highlighted row in the MENU list
   let snippetEnd = null
@@ -575,11 +576,18 @@ window.addEventListener('pointermove', (e) => {
 
   // ——— controls ———
   const act = {
-    menu: () => { ipod.classList.toggle('menu'); pick = cur; render() },
+    menu: () => {
+      const inMenu = ipod.classList.toggle('menu')
+      $('ipod-bar-title').textContent = inMenu ? playlistName : 'Now Playing'
+      pick = cur; render()
+    },
     prev: () => load(cur - 1, !audio.paused),
     next: () => load(cur + 1, !audio.paused),
     play: toggle,
-    select: () => { if (ipod.classList.contains('menu')) { ipod.classList.remove('menu'); load(pick, true) } else toggle() },
+    select: () => {
+      if (ipod.classList.contains('menu')) { ipod.classList.remove('menu'); $('ipod-bar-title').textContent = 'Now Playing'; load(pick, true) }
+      else toggle()
+    },
   }
   ipod.querySelectorAll('.ipod-wheel button').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); act[b.dataset.k]() }))
   // mouse wheel = click wheel: in the MENU it moves the highlight, otherwise it skips tracks
@@ -597,6 +605,6 @@ window.addEventListener('pointermove', (e) => {
 
   fetch('playlist.json')
     .then((r) => r.json())
-    .then(({ tracks: list }) => { tracks = list; if (tracks.length) load(0, false); else render() })
+    .then(({ name, tracks: list }) => { playlistName = name || 'playlist'; tracks = list; if (tracks.length) load(0, false); else render() })
     .catch(() => { $('ipod-song').textContent = 'playlist.json not found' })
 }

@@ -1,8 +1,26 @@
 {
   "_note": "the iPod's playlist. one entry per snippet, in order. src = audio file (mp3/m4a) under media/music/. start/end = seconds to play from the file (leave them out to play the whole file). art = optional square cover image. entries without a src still show on the iPod but can't play.",
+  "name": "sounds",
   "tracks": [
-    { "title": "A Movie Script Ending", "artist": "Death Cab for Cutie", "album": "Live at The Showbox", "art": "", "src": "", "start": 0, "end": 30 },
-    { "title": "snippet two",           "artist": "artist",             "album": "album",               "art": "", "src": "", "start": 0, "end": 30 },
-    { "title": "snippet three",         "artist": "artist",             "album": "album",               "art": "", "src": "", "start": 0, "end": 30 }
+    { "title": "It's Cold Out (Extended Mix)",            "artist": "Jawnino",                      "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Agua de Beber",                           "artist": "Astrud Gilberto",              "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Disparate Youth",                         "artist": "Santigold",                    "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "SUNSHOWER: NOURISHED BY TIME VERSION",    "artist": "Turnstile",                    "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "I Gotcha",                                "artist": "Lupe Fiasco",                  "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "4:30 AM",                                 "artist": "Atmosphere",                   "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Sounds is Vibrations",                    "artist": "Capital STEEZ",                "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "4 The People",                            "artist": "Ethereal & Playboi Carti",     "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Money never changed us",                  "artist": "blimeydog",                    "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Heal Yourself and Move",                  "artist": "Theo Parrish",                 "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Encyclopedia",                            "artist": "Operelly",                     "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Tour de France",                          "artist": "Earl Sweatshirt",              "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Da Art of Storytellin'",                  "artist": "OutKast",                      "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Fingerbib",                               "artist": "Aphex Twin",                   "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Tom's Diner",                             "artist": "Suzanne Vega",                 "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Waltz for Koop",                          "artist": "Koop",                         "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "200HP",                                   "artist": "Brotherkupa",                  "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Victime de la mode",                      "artist": "MC Solaar",                    "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Hip-Hop",                                 "artist": "Dead Prez",                    "album": "", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "Untitled #6",                             "artist": "Girlfriends",                  "album": "", "art": "", "src": "", "start": 0, "end": 30 }
   ]
 }
