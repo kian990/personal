@@ -30,9 +30,15 @@ body {
   pointer-events: none;
 }
 body.themed #bg-image { opacity: 1; }
+body.bg-cover #bg-image { background-size: cover; background-repeat: no-repeat; }   /* full-bleed photo themes */
+/* a theme's single-image title (replaces k / ian / ludwig): spans the same box the three pieces do */
+#title-alt { left: calc(0.6 * var(--u)); top: 0.2%; --w: 71.8; z-index: 5; display: none; pointer-events: none; }
+body.title-alt #title-alt { display: block; }
+body.title-alt :is(#k-lines, #title-ian, #title-ludwig) { visibility: hidden; }
 /* per-theme colours for the live text (the nav tree); the overlays are recoloured PNGs */
 :root { --nav: #1a10d8; }
 body.theme-gingham-green { --nav: #d9468f; }   /* a deeper cut of the title's pink, for legibility */
+body.theme-bliss { --nav: #d9468f; }           /* same colours as gingham for now */
 /* gingham: the coin's back is cut diamond instead of brushed metal — the facets slide a little
    under the pointer, a hard white light band sweeps across them, and a faint rainbow fringe
    rides with it (same --sx/--sy/--ang the metal uses, so it glistens at rest too) */
