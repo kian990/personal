@@ -293,12 +293,13 @@ function setupPanel({ panel, link, close, bodyClass }) {
 
 // a click-through gallery inside a sheet: click the frame (or < >, or the arrow keys
 // while the panel is open) to advance. slides are image paths; null = dotted placeholder
-function makeGallery({ gallery, frame, count, prev, next, panel }) {
+function makeGallery({ gallery, frame, count, prev, next, panel, onChange }) {
   const two = (n) => String(n).padStart(2, '0')
   let slides = [null]
   let slide = 0
   const show = (i, animate = true) => {
     slide = (i + slides.length) % slides.length
+    onChange?.(slide)
     const s = slides[slide]
     frame.innerHTML = s?.src
       ? `<img src="${s.src}" alt="${s.name || 'slide ' + two(slide + 1)}">`
@@ -316,32 +317,42 @@ function makeGallery({ gallery, frame, count, prev, next, panel }) {
     if (e.key === 'ArrowLeft') show(slide - 1)
   })
   show(0, false)
-  // set the slides: each is { src, name } (src null = placeholder)
-  return (list) => { slides = list.length ? list : [null]; show(0, false) }
+  return {
+    // set the slides: each is { src, name } (src null = placeholder)
+    set: (list) => { slides = list.length ? list : [null]; show(0, false) },
+    go: (i) => show(i),   // jump straight to slide i (e.g. from a list)
+  }
 }
 
 const $ = (id) => document.getElementById(id)
 const slug = (s) => s.replace(/\s*\(.*?\)/g, '').trim().toLowerCase().replace(/\s+/g, '_')
 const fmt = (n) => n.toLocaleString('en-US')
 const two = (n) => String(n).padStart(2, '0')
-const row = (n, label, value, cls = '') =>
-  `<li class="${cls}"><span class="ep-n">${n}</span><span class="ep-guest">${label}</span><span class="ep-views">${value}</span></li>`
+const row = (n, label, value, cls = '', i = null) =>
+  `<li class="${cls}"${i == null ? '' : ` data-i="${i}"`}><span class="ep-n">${n}</span><span class="ep-guest">${label}</span><span class="ep-views">${value}</span></li>`
 
 // ——— 005 source_material: episode list with combined views + 8-slot placeholder gallery ———
 const figmaPanel = $('figma-panel')
 const smSheet = setupPanel({ panel: figmaPanel, link: document.querySelector('.tree a.figma-link'), close: $('sm-close'), bodyClass: 'figma' })
 {
-  const setSlides = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel })
-  // drop image paths into source-material.json episodes as "image": "media/sm/ep01.jpg" and they replace the placeholders
-  setSlides(Array(8).fill(null))
+  const list = $('ep-list')
+  // the list row for the thumbnail on screen is marked .cur
+  const mark = (i) => list.querySelectorAll('li[data-i]').forEach((li) => li.classList.toggle('cur', +li.dataset.i === i))
+  const gallery = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel, onChange: mark })
+  gallery.set(Array(8).fill(null))
+  // clicking a name jumps the gallery to that episode's thumbnail
+  list.addEventListener('click', (e) => {
+    const li = e.target.closest('li[data-i]')
+    if (li) { e.stopPropagation(); gallery.go(+li.dataset.i) }
+  })
   fetch('source-material.json')
     .then((r) => r.json())
     .then(({ episodes }) => {
       const total = (ep) => (ep.youtube?.views || 0) + (ep.x?.views || 0)
-      $('ep-list').innerHTML =
-        episodes.map((ep) => row(two(ep.ep), slug(ep.guest), fmt(total(ep)))).join('') +
+      list.innerHTML =
+        episodes.map((ep, i) => row(two(ep.ep), slug(ep.guest), fmt(total(ep)), 'ep-row', i)).join('') +
         row('&nbsp;&nbsp;', 'total_views', fmt(episodes.reduce((s, ep) => s + total(ep), 0)), 'ep-total')
-      setSlides(episodes.map((ep) => (ep.image ? { src: ep.image, name: slug(ep.guest) } : null)))
+      gallery.set(episodes.map((ep) => (ep.image ? { src: ep.image, name: slug(ep.guest) } : null)))
     })
     .catch(() => { $('ep-list').innerHTML = '<li><span class="ep-guest">source-material.json not found</span></li>' })
 }
@@ -354,7 +365,8 @@ const jump = (from, to) => (e) => { e.stopPropagation(); from.hide(); to.show() 
 $('sm-next').addEventListener('click', jump(smSheet, zoraSheet))
 $('zora-back').addEventListener('click', jump(zoraSheet, smSheet))
 {
-  const setSlides = makeGallery({ gallery: $('zora-gallery'), frame: $('zora-frame'), count: $('zora-count'), prev: $('zora-prev'), next: $('zora-next'), panel: zoraPanel })
+  const gallery = makeGallery({ gallery: $('zora-gallery'), frame: $('zora-frame'), count: $('zora-count'), prev: $('zora-prev'), next: $('zora-next'), panel: zoraPanel })
+  const setSlides = gallery.set
   fetch('zora-profiles.json')
     .then((r) => r.json())
     .then(({ profiles }) => {

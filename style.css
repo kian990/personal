@@ -460,6 +460,11 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 .ep-list .ep-views { font-variant-numeric: tabular-nums; color: #ffb852; }
 .ep-list .ep-total { margin-top: .9em; padding-top: .5em; border-top: 1px solid var(--lh-lilac); }
 .ep-list .ep-total .ep-guest::after { content: none; }
+/* 005 rows are clickable: hover → pastel pink name; the episode on screen → teal */
+.ep-list .ep-row { cursor: pointer; }
+.ep-list .ep-row .ep-guest, .ep-list .ep-row .ep-n { transition: color .15s ease; }
+.ep-list .ep-row:hover :is(.ep-guest, .ep-n) { color: #ffb3f0; }
+.ep-list .ep-row.cur :is(.ep-guest, .ep-n) { color: #29bdad; }
 .ep-list .ep-total .ep-views { color: #7e3075; }
 /* right column: placeholder image frame, click to advance */
 .ep-gallery {
@@ -514,6 +519,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 
 /* 005: the gallery holds YouTube thumbnails, so the frame is 16:9 */
 #figma-panel .ep-frame { aspect-ratio: 16 / 9; }
+#figma-panel .ep-gallery { justify-content: center; }   /* thumbnail + counter sit in the middle of the column */
 
 /* ——— 006 zora_profiles sheet: its own palette, swapped in through the letterhead variables ——— */
 #zora-panel {
