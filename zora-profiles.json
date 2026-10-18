@@ -12,172 +12,421 @@
       "creator"
     ]
   },
-  "_note": "profiles: every $-named reel on @our.zora, in episode order (oldest first, $hartofalion = 01). image is optional — only the 27 with a saved cover have one. unsorted: covers whose overlay is a title rather than a handle.",
+  "_note": "profiles: every Zora Profiles reel on @our.zora in episode order (number = Zora's own numbering). name = the $ticker shown on the cover; handle/date/reel from the Instagram caption. image = what the gallery shows (the 640×1136 still when there is one, else the reel thumbnail); thumb = the reel thumbnail.",
   "profiles": [
     {
       "name": "$hartofalion",
-      "image": "images/zora/573730542_1997361691109582_9167031353185000067_n.jpg"
+      "image": "images/zora/573730542_1997361691109582_9167031353185000067_n.jpg",
+      "number": 1,
+      "handle": "@harto_falion",
+      "date": "October 31, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DQfIQ3MjggD/",
+      "thumb": "media/zora/zp001.jpg"
     },
     {
       "name": "$k4lana",
-      "image": "images/zora/573823303_18085418608988198_4991405721870614326_n.jpg"
+      "image": "images/zora/573823303_18085418608988198_4991405721870614326_n.jpg",
+      "number": 2,
+      "handle": "@k4lana",
+      "date": "November 6, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DQucLGXDtiF/",
+      "thumb": "media/zora/zp002.jpg"
     },
     {
       "name": "$blissfullperc30",
-      "image": "images/zora/582276390_4153922058256098_624550341865062444_n.jpg"
+      "image": "images/zora/582276390_4153922058256098_624550341865062444_n.jpg",
+      "number": 3,
+      "handle": "@mvuwlo",
+      "date": "November 14, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DRDJlJ3j2ld/",
+      "thumb": "media/zora/zp003.jpg"
     },
     {
       "name": "$calvinlpos",
-      "image": "images/zora/581368051_2294744501002084_3755690896246473602_n.jpg"
+      "image": "images/zora/581368051_2294744501002084_3755690896246473602_n.jpg",
+      "number": 4,
+      "handle": "@calvinlpos",
+      "date": "November 19, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DRQLc1KjnpJ/",
+      "thumb": "media/zora/zp004.jpg"
     },
     {
       "name": "$deaavdulla",
-      "image": "images/zora/587235255_1915216745733806_769031112709212031_n.jpg"
+      "image": "images/zora/587235255_1915216745733806_769031112709212031_n.jpg",
+      "number": 5,
+      "handle": "@deaavdulla",
+      "date": "November 21, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DRVXyvnjpFG/",
+      "thumb": "media/zora/zp005.jpg"
     },
     {
       "name": "$dresif",
-      "image": "images/zora/587764774_1112915674040364_3022953149730978724_n.jpg"
+      "image": "images/zora/587764774_1112915674040364_3022953149730978724_n.jpg",
+      "number": 6,
+      "handle": "@aandrelawrencee",
+      "date": "November 26, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DRhzGizDuZW/",
+      "thumb": "media/zora/zp006.jpg"
     },
     {
       "name": "$buckeshot",
-      "image": "images/zora/588596926_1514101816318026_1844111341262074758_n.jpg"
+      "image": "images/zora/588596926_1514101816318026_1844111341262074758_n.jpg",
+      "number": 7,
+      "handle": "@buckeshot",
+      "date": "November 28, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DRm7LngDgVo/",
+      "thumb": "media/zora/zp007.jpg"
     },
     {
       "name": "$masabeep",
-      "image": "images/zora/588409485_1369243644080973_2301317583729259552_n.jpg"
+      "image": "images/zora/588409485_1369243644080973_2301317583729259552_n.jpg",
+      "number": 8,
+      "handle": "@masabeep",
+      "date": "December 4, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DR2bRrvDo3j/",
+      "thumb": "media/zora/zp008.jpg"
     },
     {
       "name": "$31camo",
-      "image": "images/zora/587802353_851981030876388_4826983702932789751_n.jpg"
+      "image": "images/zora/587802353_851981030876388_4826983702932789751_n.jpg",
+      "number": 9,
+      "handle": "@31camo",
+      "date": "December 10, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DSGgeT0DpqD/",
+      "thumb": "media/zora/zp009.jpg"
     },
     {
       "name": "$yochill",
-      "image": "images/zora/587809664_18088610869988198_8544303872881045452_n.jpg"
+      "image": "images/zora/587809664_18088610869988198_8544303872881045452_n.jpg",
+      "number": 10,
+      "handle": "@yochill.1",
+      "date": "December 12, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DSK82UmjkvW/",
+      "thumb": "media/zora/zp010.jpg"
     },
     {
       "name": "$tanijuh",
-      "image": "images/zora/600338562_747748081069436_3748938381383272622_n.jpg"
+      "image": "images/zora/600338562_747748081069436_3748938381383272622_n.jpg",
+      "number": 11,
+      "handle": "@tanijuh",
+      "date": "December 17, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DSYJRlODnIH/",
+      "thumb": "media/zora/zp011.jpg"
     },
     {
       "name": "$luxmon",
-      "image": "images/zora/603488544_842286938701241_265808132389175868_n.jpg"
+      "image": "images/zora/603488544_842286938701241_265808132389175868_n.jpg",
+      "number": 12,
+      "handle": "@nevachangejdlux",
+      "date": "December 20, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DSgJSntDjc9/",
+      "thumb": "media/zora/zp012.jpg"
     },
     {
-      "name": "$sotce"
+      "name": "$sotce",
+      "number": 13,
+      "handle": "@sotce",
+      "date": "December 23, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DSnqrFejrtB/",
+      "thumb": "media/zora/zp013.jpg",
+      "image": "media/zora/zp013.jpg"
     },
     {
       "name": "$hiiihorse",
-      "image": "images/zora/609431949_1568923211041257_5953863383842611774_n.jpg"
+      "image": "images/zora/609431949_1568923211041257_5953863383842611774_n.jpg",
+      "number": 14,
+      "handle": "@hiiihorse",
+      "date": "December 30, 2025",
+      "reel": "https://www.instagram.com/our.zora/reel/DS5ZYeyDjqu/",
+      "thumb": "media/zora/zp014.jpg"
     },
     {
       "name": "$kk898x",
-      "image": "images/zora/610690305_1265339908754574_2699792625273787704_n.jpg"
+      "image": "images/zora/610690305_1265339908754574_2699792625273787704_n.jpg",
+      "number": 15,
+      "handle": "@k.atastrophic",
+      "date": "January 5, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DTJDj7ZDkXk/",
+      "thumb": "media/zora/zp015.jpg"
     },
     {
       "name": "$jordanhubert334",
-      "image": "images/zora/612236966_901841045750218_6256082055976434445_n.jpg"
+      "image": "images/zora/612236966_901841045750218_6256082055976434445_n.jpg",
+      "number": 16,
+      "handle": "@jordanhubert334",
+      "date": "January 8, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DTQj4FJDrlQ/",
+      "thumb": "media/zora/zp016.jpg"
     },
     {
       "name": "$d9lton",
-      "image": "images/zora/611279707_1620137112341260_7953893017188374957_n.jpg"
+      "image": "images/zora/611279707_1620137112341260_7953893017188374957_n.jpg",
+      "number": 17,
+      "handle": "@d9lton",
+      "date": "January 12, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DTbRtAdjn0H/",
+      "thumb": "media/zora/zp017.jpg"
     },
     {
       "name": "$jessicunt",
-      "image": "images/zora/617901919_1782698109016287_8424690308392696218_n.jpg"
+      "image": "images/zora/617901919_1782698109016287_8424690308392696218_n.jpg",
+      "number": 18,
+      "handle": "@jessic_nt",
+      "date": "January 19, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DTtKNRHjtcr/",
+      "thumb": "media/zora/zp018.jpg"
     },
     {
       "name": "$sophiawilson",
-      "image": "images/zora/622555584_2294205971072641_7580761961205812752_n.jpg"
+      "image": "images/zora/622555584_2294205971072641_7580761961205812752_n.jpg",
+      "number": 19,
+      "handle": "@phiawilson",
+      "date": "January 26, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DT_MQKHDtTe/",
+      "thumb": "media/zora/zp019.jpg"
     },
     {
       "name": "$judahweston",
-      "image": "images/zora/626278594_1416419596592922_2779593305071363439_n.jpg"
+      "image": "images/zora/626278594_1416419596592922_2779593305071363439_n.jpg",
+      "number": 20,
+      "handle": "@prollyjudahweston",
+      "date": "January 31, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DULyzDqDmlL/",
+      "thumb": "media/zora/zp020.jpg"
     },
     {
       "name": "$humane",
-      "image": "images/zora/639719705_785593024012723_4645929918260062597_n.jpg"
+      "image": "images/zora/639719705_785593024012723_4645929918260062597_n.jpg",
+      "number": 21,
+      "handle": "@humansuncut",
+      "date": "February 20, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DU_1dLDjk6-/",
+      "thumb": "media/zora/zp021.jpg"
     },
     {
       "name": "$henry",
-      "image": "images/zora/642505010_1633983874512271_3354285874051987040_n.jpg"
+      "image": "images/zora/642505010_1633983874512271_3354285874051987040_n.jpg",
+      "number": 22,
+      "handle": "@henrycasson",
+      "date": "February 27, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DVRiOnLDjjR/",
+      "thumb": "media/zora/zp022.jpg"
     },
     {
       "name": "$sadprt",
-      "image": "images/zora/648556807_1436862037299248_5054037167974406892_n.jpg"
+      "image": "images/zora/648556807_1436862037299248_5054037167974406892_n.jpg",
+      "number": 23,
+      "handle": "@sadprt",
+      "date": "March 6, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DVj3ErmjpI-/",
+      "thumb": "media/zora/zp023.jpg"
     },
     {
       "name": "$jean",
-      "image": "images/zora/652006211_1425543628881167_3148337635942406640_n.jpg"
+      "image": "images/zora/652006211_1425543628881167_3148337635942406640_n.jpg",
+      "number": 24,
+      "handle": "@uhh.jean",
+      "date": "March 13, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DV1beTxjkC3/",
+      "thumb": "media/zora/zp024.jpg"
     },
     {
       "name": "$libertylove",
-      "image": "images/zora/654685559_869819182691170_2586190055226542134_n.jpg"
+      "image": "images/zora/654685559_869819182691170_2586190055226542134_n.jpg",
+      "number": 25,
+      "handle": "@libertyloveee",
+      "date": "March 17, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DV_xW_Uju9I/",
+      "thumb": "media/zora/zp025.jpg"
     },
     {
       "name": "$jacob",
-      "image": "images/zora/655666201_982076640820011_5330700687583312630_n.jpg"
+      "image": "images/zora/655666201_982076640820011_5330700687583312630_n.jpg",
+      "number": 26,
+      "handle": "@jacob.consenstein",
+      "date": "March 24, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DWRjAWwDnYI/",
+      "thumb": "media/zora/zp026.jpg"
     },
     {
       "name": "$sorisa",
-      "image": "images/zora/657738754_1716957046381862_10894481889724887_n.jpg"
+      "image": "images/zora/657738754_1716957046381862_10894481889724887_n.jpg",
+      "number": 27,
+      "handle": "@sorisa11",
+      "date": "March 31, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DWj48GOjygF/",
+      "thumb": "media/zora/zp027.jpg"
     },
     {
       "name": "$avalions",
-      "image": "images/zora/658799781_18099618010988198_1409007503395975576_n.jpg"
+      "image": "images/zora/658799781_18099618010988198_1409007503395975576_n.jpg",
+      "number": 28,
+      "handle": "@ava.lions",
+      "date": "April 3, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DWrt89fjqun/",
+      "thumb": "media/zora/zp028.jpg"
     },
     {
-      "name": "$internetisdead"
+      "name": "$internetisdead",
+      "number": 29,
+      "handle": "@theinternetisdeadpod",
+      "date": "April 7, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DW1o7-PjoR2/",
+      "thumb": "media/zora/zp029.jpg",
+      "image": "media/zora/zp029.jpg"
     },
     {
-      "name": "$jetfighterwatson"
+      "name": "$jetfighterwatson",
+      "number": 30,
+      "handle": "@jetfighterwatson",
+      "date": "April 8, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DW4g9-qjxrt/",
+      "thumb": "media/zora/zp030.jpg",
+      "image": "media/zora/zp030.jpg"
     },
     {
-      "name": "$killfallou"
+      "name": "$killfallou",
+      "number": 31,
+      "handle": "@killfallou",
+      "date": "April 14, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DXH5PffkR7i/",
+      "thumb": "media/zora/zp031.jpg",
+      "image": "media/zora/zp031.jpg"
     },
     {
-      "name": "$tweaktitan $bussinmaddox"
+      "name": "$tweaktitan $bussinmaddox",
+      "number": 32,
+      "handle": "@tweaktitans @mrbussinmaddox",
+      "date": "April 18, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DXR_FAbjj2Z/",
+      "thumb": "media/zora/zp032.jpg",
+      "image": "media/zora/zp032.jpg"
     },
     {
-      "name": "$rockstarpayso"
+      "name": "$rockstarpayso",
+      "number": 33,
+      "handle": "@rockstarxpayso",
+      "date": "April 21, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DXaCHGgDzVB/",
+      "thumb": "media/zora/zp033.jpg",
+      "image": "media/zora/zp033.jpg"
     },
     {
-      "name": "$kuntfetishh"
+      "name": "$kuntfetishh",
+      "number": 34,
+      "handle": "@kuntfetishh",
+      "date": "April 24, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DXhnUTRDtBT/",
+      "thumb": "media/zora/zp034.jpg",
+      "image": "media/zora/zp034.jpg"
     },
     {
-      "name": "$kelseyhealey"
+      "name": "$kelseyhealey",
+      "number": 35,
+      "handle": "@kelseyhealey",
+      "date": "April 28, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DXsLazrDi4h/",
+      "thumb": "media/zora/zp035.jpg",
+      "image": "media/zora/zp035.jpg"
     },
     {
-      "name": "$isokeys"
+      "name": "$isokeys",
+      "number": 36,
+      "handle": "@residentwhitegurl",
+      "date": "April 30, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DXwzkguuTns/",
+      "thumb": "media/zora/zp036.jpg",
+      "image": "media/zora/zp036.jpg"
     },
     {
-      "name": "$emmaorhun"
+      "name": "$emmaorhun",
+      "number": 37,
+      "handle": "@emmaorhun",
+      "date": "May 8, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DYF_hcYOU6Q/",
+      "thumb": "media/zora/zp037.jpg",
+      "image": "media/zora/zp037.jpg"
     },
     {
-      "name": "$warhol $b6"
+      "name": "$warhol $b6",
+      "number": 38,
+      "handle": "@warhol & @bfuxkin6",
+      "date": "May 14, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DYVKqSChdnJ/",
+      "thumb": "media/zora/zp038.jpg",
+      "image": "media/zora/zp038.jpg"
     },
     {
-      "name": "$troycicotte"
+      "name": "$troycicotte",
+      "number": 39,
+      "handle": "@troycicotte",
+      "date": "May 20, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DYkdMgAO-ZS/",
+      "thumb": "media/zora/zp039.jpg",
+      "image": "media/zora/zp039.jpg"
     },
     {
-      "name": "$eristheplanet"
+      "name": "$eristheplanet",
+      "number": 40,
+      "handle": "@eristheplanet",
+      "date": "May 21, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DYm5zAAuJwD/",
+      "thumb": "media/zora/zp040.jpg",
+      "image": "media/zora/zp040.jpg"
     },
     {
-      "name": "$7tails"
+      "name": "$7tails",
+      "number": 41,
+      "handle": "@7tailsofficial",
+      "date": "June 1, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DZDcALtJ9Bg/",
+      "thumb": "media/zora/zp041.jpg",
+      "image": "media/zora/zp041.jpg"
     },
     {
-      "name": "$mackenzie"
+      "name": "$mackenzie",
+      "number": 42,
+      "handle": "@mackenzie",
+      "date": "June 8, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DZVLbUjOZBN/",
+      "thumb": "media/zora/zp042.jpg",
+      "image": "media/zora/zp042.jpg"
     },
     {
-      "name": "$1uptee"
+      "name": "$1uptee",
+      "number": 43,
+      "handle": "@1uptee",
+      "date": "June 9, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DZX9Urqp0_Q/",
+      "thumb": "media/zora/zp043.jpg",
+      "image": "media/zora/zp043.jpg"
     },
     {
-      "name": "$amin.k.47"
+      "name": "$amin.k.47",
+      "number": 44,
+      "handle": "@amin.k.47",
+      "date": "June 16, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DZpjqwmuxVD/",
+      "thumb": "media/zora/zp044.jpg",
+      "image": "media/zora/zp044.jpg"
     },
     {
-      "name": "$sienasaba"
+      "name": "$sienasaba",
+      "number": 45,
+      "handle": "@siena.saba",
+      "date": "July 3, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DaVcmzkurDf/",
+      "thumb": "media/zora/zp045.jpg",
+      "image": "media/zora/zp045.jpg"
     },
     {
-      "name": "$wtfckjay"
+      "name": "$wtfckjay",
+      "number": 46,
+      "handle": "@wtfckjay",
+      "date": "July 29, 2026",
+      "reel": "https://www.instagram.com/our.zora/reel/DbYxz7upl3o/",
+      "thumb": "media/zora/zp046.jpg",
+      "image": "media/zora/zp046.jpg"
     }
   ],
   "unsorted": [
