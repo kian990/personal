@@ -497,13 +497,19 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 }
 .ep-nav:hover { color: #e3001b; }
 
-/* ——— 006 zora_profiles sheet ——— */
-.lh-word {                       /* text wordmark where 005 has the logo image */
-  font-size: 3.4em;
-  line-height: .95;
-  letter-spacing: -.08em;
-  font-weight: 400;
+/* ——— 006 zora_profiles sheet: its own palette, swapped in through the letterhead variables ——— */
+#zora-panel {
+  --lh-blue: #d50c42;     /* type + rules: red */
+  --lh-lilac: #d1b0b3;    /* dot field, dashes, list rule: dusty pink */
+  --lh-slate: #de4500;    /* labels + numbers: orange */
+  --zora-green: #94ff94;  /* hover + highlight */
 }
+#zora-panel .lh-logo { width: 26%; }
+#zora-panel :is(.sm-close, .ep-nav):hover { color: var(--zora-green); }
+#zora-panel .ep-frame { border-color: var(--lh-blue); }
+#zora-panel .ep-caption { color: var(--lh-blue); }
+/* the counter sits on a green block, like the nav highlights */
+#zora-panel #zora-count { background: var(--zora-green); color: #000; padding: 0 .5em; }
 .sm-stack { display: flex; flex-direction: column; gap: 1.6em; width: 100%; max-width: 46em; }
 .sm-blurb {
   margin: 0;
@@ -513,11 +519,12 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 }
 /* every guest, flowed into two columns so 45+ names fit the sheet */
 .name-list {
-  font-size: .95em;
-  line-height: 1.55;
+  font-size: 1.15em;
+  line-height: 1.4;
   columns: 2;
-  column-gap: 2.5em;
+  column-gap: 2em;
 }
+.name-list li { gap: .8em; }
 .name-list li { break-inside: avoid; }
 .name-list .ep-guest { text-transform: none; }   /* $handles as written on the covers */
 .name-list .ep-guest::after { content: none; }
@@ -583,8 +590,8 @@ body.editing .el:active { cursor: grabbing; }
   .sm-body { grid-template-columns: 1fr; gap: 2em 0; padding-top: 2em; }
   .sm-left { justify-content: flex-start; }
   .ep-list { font-size: 1.15em; }
-  .name-list { font-size: 1em; }
-  .lh-word { font-size: 2.6em; }
+  .name-list { font-size: 1.05em; }
+  #zora-panel .lh-logo { width: 50%; }
   .zora-frame { flex: 0 0 auto; width: 70%; align-self: flex-start; }
 
   /* nav tree: its own clear band under the title cluster */
