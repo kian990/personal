@@ -177,7 +177,8 @@ body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }
 }
 
 /* ——— 005 source_material: custom hover colours (number + slash untouched) ——— */
-.tree .figma-link .fg { text-transform: lowercase; }   /* FIGMA stays lowercase in the all-caps nav */
+.tree .figma-link .fg,
+.tree .lc { text-transform: lowercase; }   /* FIGMA / zora stay lowercase in the all-caps nav */
 .tree .done a.figma-link:hover {
   background: rgba(166, 230, 219, .65);   /* #a6e6db, translucent like the white wraps */
 }
