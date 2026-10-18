@@ -453,7 +453,7 @@ window.addEventListener('pointermove', (e) => {
     c.style.setProperty('--ang', ang)
     // tilt toward the pointer (used by the diamond back): up to ±8° based on where the
     // pointer sits relative to this piece's centre
-    if (c.classList.contains('flipped')) {
+    {
       const r = c.getBoundingClientRect()
       const dx = Math.max(-1, Math.min(1, (px - (r.left + r.width / 2)) / (r.width / 2)))
       const dy = Math.max(-1, Math.min(1, (py - (r.top + r.height / 2)) / (r.height / 2)))
@@ -662,7 +662,8 @@ window.addEventListener('pointermove', (e) => {
 // the new scene is drawn on a canvas and digitizes in cell by cell over the old one —————
 const THEMES = [
   { name: 'video' },   // the original: the video + the original overlay colours
-  { name: 'gingham-green', tile: 'media/bg/gingham-green.webp', tileSize: 440,
+  { name: 'gingham-green', tile: 'media/bg/gingham-green.webp', tileSize: 440, backFirst: true,   // backFirst: the coin rests on its back (diamond)
+    ipod: 'media/ipod-teal.png',   // the iPod's shell in the theme's cyan
     overlays: ['title-ian', 'title-ludwig', 'custom-bar', 'k-lines', 'asterisks', 'jp-subtitle', 'jp-vertical'] },
 ]
 {
@@ -682,9 +683,9 @@ const THEMES = [
   const assetsFor = (theme) => {
     if (!assets.has(theme.name)) {
       assets.set(theme.name, (async () => {
-        const [tile, ...list] = await Promise.all([theme.tile ? load(theme.tile) : null, ...OVERLAY_IDS.map((id) => load(srcFor(theme, id)))])
-        await Promise.all([tile, ...list].filter(Boolean).map(decoded))
-        return { tile, imgs: Object.fromEntries(OVERLAY_IDS.map((id, k) => [id, list[k]])) }
+        const [tile, gem, ipodImg, ...list] = await Promise.all([theme.tile ? load(theme.tile) : null, theme.backFirst ? load('media/diamond.jpg') : null, load(theme.ipod || 'media/ipod.png'), ...OVERLAY_IDS.map((id) => load(srcFor(theme, id)))])
+        await Promise.all([tile, gem, ipodImg, ...list].filter(Boolean).map(decoded))
+        return { tile, gem, ipodImg, imgs: Object.fromEntries(OVERLAY_IDS.map((id, k) => [id, list[k]])) }
       })())
     }
     return assets.get(theme.name)
@@ -703,7 +704,12 @@ const THEMES = [
       // the coins' metallic back is a mask of the front: keep it in sync
       document.querySelector(`#${id} .back`)?.style.setProperty('--face', `url("${src}")`)
     }
+    // a back-first theme inverts the coin's resting side; mute the flip transition for this
+    // swap so the canvas hand-off is a cut, not a rotation
+    coins.forEach((c) => { c.style.transition = 'none' })
     setThemeClass(theme)
+    requestAnimationFrame(() => requestAnimationFrame(() => coins.forEach((c) => { c.style.transition = '' })))
+    document.querySelector('#ipod .ipod-body').setAttribute('src', theme.ipod || 'media/ipod.png')
     if (theme.tile) {
       bgImage.style.backgroundImage = `url("${theme.tile}")`
       bgImage.style.backgroundSize = `${theme.tileSize}px`
@@ -713,8 +719,30 @@ const THEMES = [
     }
   }
 
+  // a coin's resting side on a back-first theme: the diamond, cut to the artwork, with its rim lights —
+  // matches style.css (.coin .back on that theme) so the hand-off is seamless
+  const COIN_IDS = ['k-lines', 'title-ian', 'title-ludwig']
+  const FACET_UNITS = 23.4   // background-size of the facets, in design units (as in style.css)
+  function drawCoinBack(ctx, img, r, dpr, gem) {
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr))
+    const tmp = document.createElement('canvas'); tmp.width = w; tmp.height = h
+    const t = tmp.getContext('2d')
+    const rim = 0.12 * unit() * dpr
+    const stamp = (fill, dx, dy) => {
+      t.globalCompositeOperation = 'source-over'; t.clearRect(0, 0, w, h); t.drawImage(img, 0, 0, w, h)
+      t.globalCompositeOperation = 'source-in'; t.fillStyle = fill; t.fillRect(0, 0, w, h)
+      ctx.drawImage(tmp, r.left * dpr + dx, r.top * dpr + dy)
+    }
+    stamp('#ffffff', -rim, -rim)
+    stamp('#9a9ab0', rim, rim)
+    const tileW = FACET_UNITS * unit() * dpr
+    const pat = t.createPattern(gem, 'repeat')
+    pat.setTransform(new DOMMatrix().translate((w - tileW) / 2, (h - tileW * gem.height / gem.width) / 2).scale(tileW / gem.width))
+    stamp(pat, 0, 0)
+  }
+
   // the incoming scene: background (tile, or the live video frame) + every overlay at its on-screen box
-  function drawScene(ctx, W, H, dpr, theme, tile, pat, imgs) {
+  function drawScene(ctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg) {
     if (tile) {
       ctx.fillStyle = pat; ctx.fillRect(0, 0, W, H)
     } else {
@@ -727,7 +755,14 @@ const THEMES = [
     }
     for (const id of OVERLAY_IDS) {
       const r = document.getElementById(id).getBoundingClientRect()
-      if (r.width && r.height) ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+      if (!r.width || !r.height) continue
+      if (theme.backFirst && gem && COIN_IDS.includes(id)) drawCoinBack(ctx, imgs[id], r, dpr, gem)
+      else ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+    }
+    // the iPod's shell in the new theme's colour, wherever it currently sits (tucked or raised)
+    if (ipodImg) {
+      const r = document.querySelector('#ipod .ipod-body').getBoundingClientRect()
+      if (r.width && r.top < innerHeight) ctx.drawImage(ipodImg, r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
     }
   }
 
@@ -736,7 +771,8 @@ const THEMES = [
     busy = true
     const theme = THEMES[i]
     try {
-      const { tile, imgs } = await assetsFor(theme)
+      const { tile, imgs, gem, ipodImg } = await assetsFor(theme)
+      document.body.classList.add('switching')
       const dpr = Math.min(devicePixelRatio || 1, 2)   // match the page exactly, so nothing shifts when the canvas comes away
       const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
       fx.width = W; fx.height = H
@@ -758,13 +794,13 @@ const THEMES = [
       // the nav sits above the canvas, so its colour flips the moment the sweep reaches it
       const navAt = (tree.getBoundingClientRect().left / innerWidth) * MOSAIC_SWEEP + MOSAIC_NOISE * 0.5
       let navDone = false
-      if (tile) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs)   // static scene: draw once
+      if (tile) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg)   // static scene: draw once
       fx.classList.add('on')
       await new Promise((done) => {
         const t0 = performance.now()
         const frame = (now) => {
           const t = (now - t0) / 1000
-          if (!tile) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs)   // live video frame: redraw
+          if (!tile) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg)   // live video frame: redraw
           mctx.clearRect(0, 0, W, H); mctx.fillStyle = '#000'
           for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
             const k = (t - at[r * cols + c]) / MOSAIC_POP
@@ -791,6 +827,7 @@ const THEMES = [
     } finally {
       fx.classList.remove('on')
       fx.getContext('2d').clearRect(0, 0, fx.width, fx.height)
+      document.body.classList.remove('switching')
       busy = false
     }
   }

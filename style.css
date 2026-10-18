@@ -32,7 +32,7 @@ body {
 body.themed #bg-image { opacity: 1; }
 /* per-theme colours for the live text (the nav tree); the overlays are recoloured PNGs */
 :root { --nav: #1a10d8; }
-body.theme-gingham-green { --nav: #ffa6d9; }   /* the title's pink */
+body.theme-gingham-green { --nav: #d9468f; }   /* a deeper cut of the title's pink, for legibility */
 /* gingham: the coin's back is cut diamond instead of brushed metal — the facets slide a little
    under the pointer, a hard white light band sweeps across them, and a faint rainbow fringe
    rides with it (same --sx/--sy/--ang the metal uses, so it glistens at rest too) */
@@ -53,9 +53,12 @@ body.theme-gingham-green .coin .back .metal {
 /* the stone tilts a few degrees toward the pointer while flipped (on the back face itself, so it
    answers the mouse immediately instead of riding the slow flip transition) */
 body.theme-gingham-green .coin .back { transition: transform .18s ease-out; }
-body.theme-gingham-green .coin.flipped .back {
+body.theme-gingham-green .coin:not(.flipped) .back {
   transform: rotateY(calc(180deg + var(--ty, 0deg))) rotateX(var(--tx, 0deg));
 }
+/* on gingham the coin is inverted: diamond at rest, the colourway on hover */
+body.theme-gingham-green .coin { transform: perspective(900px) rotateY(180deg); }
+body.theme-gingham-green .coin.flipped { transform: perspective(900px) rotateY(0deg); }
 body.theme-gingham-green .coin .back::before { background: #ffffff; }
 body.theme-gingham-green .coin .back::after  { background: #9a9ab0; }
 body.themed #bg { opacity: 0; transition: none; }   /* the video keeps playing (it's the music) but is hidden */
@@ -69,6 +72,7 @@ body.themed #bg { opacity: 0; transition: none; }   /* the video keeps playing (
   pointer-events: none;
 }
 #theme-fx.on { display: block; }
+body.switching #ipod { z-index: 29; }   /* during a switch the iPod sits under the canvas, which draws its new shell */
 #custom-bar { cursor: pointer; }
 
 /* ————— overlay stage ————— */
