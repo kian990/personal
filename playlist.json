@@ -1,0 +1,8 @@
+{
+  "_note": "the iPod's playlist. one entry per snippet, in order. src = audio file (mp3/m4a) under media/music/. start/end = seconds to play from the file (leave them out to play the whole file). art = optional square cover image. entries without a src still show on the iPod but can't play.",
+  "tracks": [
+    { "title": "A Movie Script Ending", "artist": "Death Cab for Cutie", "album": "Live at The Showbox", "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "snippet two",           "artist": "artist",             "album": "album",               "art": "", "src": "", "start": 0, "end": 30 },
+    { "title": "snippet three",         "artist": "artist",             "album": "album",               "art": "", "src": "", "start": 0, "end": 30 }
+  ]
+}

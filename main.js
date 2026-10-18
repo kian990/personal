@@ -207,7 +207,7 @@ const MOSAIC_SWEEP = 0.7   // s — how long the left→right sweep takes
 const MOSAIC_NOISE = 0.35  // s — random jitter on top, so it feels digitized not wiped
 const MOSAIC_POP = 0.18    // s — each cell's own fade
 const MOSAIC_TOTAL = MOSAIC_SWEEP + MOSAIC_NOISE + MOSAIC_POP
-const MOSAIC_FILL = '#fff'
+const MOSAIC_FILL = 'rgba(255, 255, 255, .9)'   // matches .sheet-panel.solid in style.css
 
 function runMosaic(panel, mosaic, reverse, done) {
   cancelAnimationFrame(panel._raf)
@@ -473,4 +473,130 @@ window.addEventListener('pointermove', (e) => {
   addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(buildFrames, 150) })
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) ctx.putImageData(frames[0], 0, 0)
   else requestAnimationFrame(tick)
+}
+
+
+// ————— iPod: hover the star → it slides up from the bottom-right corner (GTA phone style).
+// the click wheel's MENU / ⏮ / ⏭ / ▶⏸ / centre are real buttons, and the mouse wheel
+// over the iPod scrolls through the playlist. snippets come from playlist.json —————
+{
+  const ipod = $('ipod')
+  const star = $('star')
+  const audio = $('ipod-audio')
+  let tracks = []
+  let cur = 0        // the track on the Now Playing screen
+  let pick = 0       // the highlighted row in the MENU list
+  let snippetEnd = null
+
+  // ——— show / hide: up while the pointer is on the star or the iPod itself ———
+  let hideT
+  const up = () => { clearTimeout(hideT); ipod.classList.add('up'); ipod.setAttribute('aria-hidden', 'false') }
+  const down = () => { hideT = setTimeout(() => { ipod.classList.remove('up'); ipod.setAttribute('aria-hidden', 'true') }, 450) }
+  for (const el of [star, ipod]) {
+    el.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') up() })
+    el.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') down() })
+  }
+  // touch: tapping the star toggles it
+  star.addEventListener('click', (e) => {
+    if (editing || !matchMedia('(hover: none)').matches) return
+    e.preventDefault()
+    ipod.classList.contains('up') ? ipod.classList.remove('up') : up()
+  })
+
+  // ——— screen ———
+  const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
+  const snippetLength = (t) => (t.end ?? audio.duration ?? 0) - (t.start || 0)
+  function renderNow() {
+    const t = tracks[cur]
+    $('ipod-count').textContent = tracks.length ? `${cur + 1} of ${tracks.length}` : '0 of 0'
+    $('ipod-song').textContent = t?.title || '—'
+    $('ipod-artist').textContent = t?.artist || ''
+    $('ipod-album').textContent = t?.album || ''
+    $('ipod-art').style.backgroundImage = t?.art ? `url("${t.art}")` : ''
+    renderTime()
+  }
+  function renderTime() {
+    const t = tracks[cur]
+    const len = t ? Math.max(0, snippetLength(t) || 0) : 0
+    const pos = t && !audio.paused ? Math.max(0, audio.currentTime - (t.start || 0)) : (audio.src && t ? Math.max(0, audio.currentTime - (t.start || 0)) : 0)
+    $('ipod-fill').style.width = len ? `${Math.min(100, (pos / len) * 100)}%` : '0%'
+    $('ipod-el').textContent = mmss(pos)
+    $('ipod-rem').textContent = '-' + mmss(Math.max(0, len - pos))
+    $('ipod-state').textContent = audio.paused ? '▶' : '‖'   // ▶ / ‖
+  }
+  function renderList() {
+    const list = $('ipod-list')
+    list.innerHTML = tracks.map((t, i) =>
+      `<li class="${i === pick ? 'on' : ''} ${i === cur && !audio.paused ? 'playing' : ''}"><span>${t.title}</span></li>`).join('')
+    // keep the highlighted row in view (6 rows fit)
+    const rowH = list.firstElementChild?.offsetHeight || 0
+    const visible = Math.max(1, Math.floor(list.clientHeight / (rowH || 1)))
+    list.scrollTop = Math.max(0, (pick - visible + 1) * rowH)
+  }
+  const render = () => { renderNow(); renderList() }
+
+  // ——— playback: each track is a snippet [start, end] of its file ———
+  function load(i, autoplay) {
+    cur = (i + tracks.length) % tracks.length
+    pick = cur
+    const t = tracks[cur]
+    audio.pause()
+    snippetEnd = t.end ?? null
+    if (t.src) {
+      audio.src = t.src
+      audio.currentTime = 0
+      audio.load()
+      const seek = () => { audio.currentTime = t.start || 0; if (autoplay) play() }
+      audio.addEventListener('loadedmetadata', seek, { once: true })
+    } else {
+      audio.removeAttribute('src')
+    }
+    render()
+  }
+  // the site's own music ducks while a snippet plays, and comes back after
+  let duckedSite = false
+  function play() {
+    if (!tracks[cur]?.src) return
+    if (!bg.muted) { bg.muted = true; duckedSite = true; setSoundLabel() }
+    audio.play().catch(() => {})
+  }
+  function pause() {
+    audio.pause()
+    if (duckedSite) { bg.muted = false; duckedSite = false; setSoundLabel() }
+  }
+  const toggle = () => (audio.paused ? play() : pause())
+  audio.addEventListener('timeupdate', () => {
+    if (snippetEnd != null && audio.currentTime >= snippetEnd) load(cur + 1, true)
+    else renderTime()
+  })
+  audio.addEventListener('ended', () => load(cur + 1, true))
+  audio.addEventListener('play', render)
+  audio.addEventListener('pause', render)
+
+  // ——— controls ———
+  const act = {
+    menu: () => { ipod.classList.toggle('menu'); pick = cur; render() },
+    prev: () => load(cur - 1, !audio.paused),
+    next: () => load(cur + 1, !audio.paused),
+    play: toggle,
+    select: () => { if (ipod.classList.contains('menu')) { ipod.classList.remove('menu'); load(pick, true) } else toggle() },
+  }
+  ipod.querySelectorAll('.ipod-wheel button').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); act[b.dataset.k]() }))
+  // mouse wheel = click wheel: in the MENU it moves the highlight, otherwise it skips tracks
+  let wheelAcc = 0
+  ipod.addEventListener('wheel', (e) => {
+    e.preventDefault()
+    wheelAcc += e.deltaY
+    if (Math.abs(wheelAcc) < 40) return
+    const d = wheelAcc > 0 ? 1 : -1
+    wheelAcc = 0
+    if (!tracks.length) return
+    if (ipod.classList.contains('menu')) { pick = (pick + d + tracks.length) % tracks.length; renderList() }
+    else load(cur + d, !audio.paused)
+  }, { passive: false })
+
+  fetch('playlist.json')
+    .then((r) => r.json())
+    .then(({ tracks: list }) => { tracks = list; if (tracks.length) load(0, false); else render() })
+    .catch(() => { $('ipod-song').textContent = 'playlist.json not found' })
 }

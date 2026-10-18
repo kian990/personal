@@ -160,6 +160,42 @@
 
   <button id="sound" type="button">sound off</button>
 
+  <!-- iPod: slides up from the bottom-right corner when the star is hovered (GTA phone style).
+       the screen is live HTML; the click wheel + mouse wheel move through playlist.json snippets -->
+  <div id="ipod" aria-hidden="true">
+    <img class="ipod-body" src="media/ipod.png" alt="" draggable="false">
+    <div class="ipod-screen">
+      <div class="ipod-bar">
+        <span class="ipod-state" id="ipod-state">&#9654;</span>
+        <span class="ipod-bar-title" id="ipod-bar-title">Now Playing</span>
+        <span class="ipod-batt"><i></i></span>
+      </div>
+      <div class="ipod-now" id="ipod-now">
+        <div class="ipod-count" id="ipod-count">0 of 0</div>
+        <div class="ipod-meta">
+          <div class="ipod-art" id="ipod-art"></div>
+          <div class="ipod-lines">
+            <div class="ipod-song" id="ipod-song">&mdash;</div>
+            <div id="ipod-artist"></div>
+            <div id="ipod-album"></div>
+          </div>
+        </div>
+        <div class="ipod-prog"><i id="ipod-fill"></i></div>
+        <div class="ipod-times"><span id="ipod-el">0:00</span><span id="ipod-rem">-0:00</span></div>
+      </div>
+      <ol class="ipod-list" id="ipod-list"></ol>
+    </div>
+    <!-- invisible hit zones laid over the click wheel -->
+    <div class="ipod-wheel">
+      <button type="button" class="w-menu"   data-k="menu"   aria-label="menu"></button>
+      <button type="button" class="w-prev"   data-k="prev"   aria-label="previous"></button>
+      <button type="button" class="w-next"   data-k="next"   aria-label="next"></button>
+      <button type="button" class="w-play"   data-k="play"   aria-label="play / pause"></button>
+      <button type="button" class="w-select" data-k="select" aria-label="select"></button>
+    </div>
+    <audio id="ipod-audio" preload="none"></audio>
+  </div>
+
   <!-- film grain: animated static over the whole site, drawn by main.js -->
   <canvas id="grain" aria-hidden="true"></canvas>
 

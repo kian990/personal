@@ -298,7 +298,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 }
 .sheet-panel.open { pointer-events: auto; }
 /* once the mosaic has filled in, the box becomes one clean solid wrap */
-.sheet-panel.solid { background: #fff; }   /* solid white page once the mosaic has filled in */
+.sheet-panel.solid { background: rgba(255, 255, 255, .9); }   /* white page once the mosaic has filled in — 90%, so the video ghosts through */
 /* the mosaic canvas (drawn by main.js) fills the box under the letterhead */
 .sheet-panel .mosaic {
   position: absolute;
@@ -569,6 +569,102 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
   image-rendering: pixelated;   /* grain is drawn at half resolution: chunkier, cheaper */
 }
 @media (prefers-reduced-motion: reduce) { #grain { opacity: calc(var(--grain) * .5); } }
+
+/* ————— iPod: tucked below the bottom-right corner; hovering the star slides it up
+   (GTA phone style). everything inside is sized in cqw = % of the iPod's width ————— */
+#ipod {
+  position: fixed;
+  right: 1.2%;
+  bottom: 0;
+  z-index: 60;                 /* over the stage + star, under the 005/006 sheets */
+  width: clamp(170px, 15vw, 240px);
+  container-type: inline-size;
+  transform: translateY(104%);
+  transition: transform .65s cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .5));
+  user-select: none;
+}
+#ipod.up { transform: translateY(5%); }   /* bottom edge stays just off-screen, like a phone pulled from a pocket */
+.ipod-body { display: block; width: 100%; height: auto; border-radius: 7% / 4.3%; }
+
+/* the LCD: covers the photographed screen and redraws the classic Now Playing view */
+.ipod-screen {
+  position: absolute;
+  left: 10.3%; top: 5.1%;
+  width: 79.5%; height: 36.6%;
+  background: #fff;
+  color: #000;
+  font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 4.1cqw;
+  line-height: 1.25;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25);
+}
+.ipod-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: .25em .7em;
+  background: linear-gradient(#dfe6f2, #b9c7dd);
+  border-bottom: 1px solid #8a9bb8;
+  color: #30456a;
+  font-weight: 700;
+}
+.ipod-state { color: #2a7be4; font-size: .9em; }
+.ipod-bar-title { flex: 1; text-align: center; }
+.ipod-batt { width: 2.2em; height: 1em; border: 1px solid #5e6b80; border-radius: .18em; padding: .1em; }
+.ipod-batt i { display: block; width: 100%; height: 100%; background: #3cc24a; }
+
+.ipod-now { flex: 1; display: flex; flex-direction: column; padding: .45em .9em .4em; gap: .35em; }
+.ipod-count { color: #30456a; font-weight: 700; }
+.ipod-meta { flex: 1; display: flex; gap: .9em; min-height: 0; }
+.ipod-art {
+  flex: 0 0 auto;
+  width: 33%;
+  aspect-ratio: 1;
+  background: #ccd3dd center / cover no-repeat;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.ipod-lines { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: .35em; }
+.ipod-lines > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ipod-song { font-weight: 700; }
+.ipod-prog { height: .6em; border: 1px solid #8a9bb8; background: linear-gradient(#f4f6fa, #d6dde8); }
+.ipod-prog i { display: block; height: 100%; width: 0; background: linear-gradient(#5ea2f5, #1f6fe0); }
+.ipod-times { display: flex; justify-content: space-between; font-weight: 700; color: #30456a; }
+
+/* MENU view: the playlist, iPod-menu style, the chosen row highlighted */
+.ipod-list { display: none; flex: 1; margin: 0; padding: 0; list-style: none; overflow: hidden; }
+#ipod.menu .ipod-now { display: none; }
+#ipod.menu .ipod-list { display: block; }
+.ipod-list li {
+  display: flex;
+  padding: .2em .7em;
+  gap: .6em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ipod-list li span:first-child { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.ipod-list li.on { background: linear-gradient(#5ea2f5, #1f6fe0); color: #fff; }
+.ipod-list li.playing::after { content: '\25B6'; font-size: .8em; }
+
+/* click-wheel hit zones: a circle over the photographed wheel, split into 5 buttons */
+.ipod-wheel {
+  position: absolute;
+  left: 17.6%; top: 50.8%;
+  width: 63.4%; aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.ipod-wheel button { position: absolute; background: none; border: 0; padding: 0; cursor: pointer; }
+.ipod-wheel button:active { background: rgba(255, 255, 255, .12); }
+.w-menu   { left: 25%; top: 0;    width: 50%; height: 27%; }
+.w-play   { left: 25%; bottom: 0; width: 50%; height: 27%; }
+.w-prev   { left: 0;   top: 25%;  width: 27%; height: 50%; }
+.w-next   { right: 0;  top: 25%;  width: 27%; height: 50%; }
+.w-select { left: 34.5%; top: 34.5%; width: 31%; height: 31%; border-radius: 50%; }
 
 /* ————— edit mode ————— */
 body.editing .el { outline: 1px dashed rgba(255, 0, 128, .8); cursor: grab; }
