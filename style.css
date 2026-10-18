@@ -19,6 +19,30 @@ body {
 }
 #bg.ready { opacity: 1; }
 
+/* ————— themes (easter egg): clicking custom_built_backgrounds.pol cycles the background
+   and swaps every overlay for a recoloured set (media/overlay/<theme>/) ————— */
+#bg-image {
+  position: fixed;
+  inset: 0;
+  background-position: center;
+  background-repeat: repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+body.themed #bg-image { opacity: 1; }
+body.themed #bg { opacity: 0; transition: none; }   /* the video keeps playing (it's the music) but is hidden */
+#theme-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 30;                 /* over the stage, under the nav tree (40) */
+  width: 100%;
+  height: 100%;
+  display: none;
+  pointer-events: none;
+}
+#theme-fx.on { display: block; }
+#custom-bar { cursor: pointer; }
+
 /* ————— overlay stage ————— */
 .stage {
   position: fixed;

@@ -645,3 +645,115 @@ window.addEventListener('pointermove', (e) => {
     .then(({ name, tracks: list }) => { playlistName = name || 'playlist'; tracks = list; if (tracks.length) load(0, false); else render() })
     .catch(() => { $('ipod-song').textContent = 'playlist.json not found' })
 }
+
+
+// ————— backgrounds easter egg: clicking custom_built_backgrounds.pol cycles the theme.
+// a theme = a tiled background + a recoloured copy of some overlays (media/overlay/<theme>/).
+// the new scene is drawn on a canvas and digitizes in cell by cell over the old one —————
+const THEMES = [
+  { name: 'video' },   // the original: the video + the original overlay colours
+  { name: 'gingham-green', tile: 'media/bg/gingham-green.webp', tileSize: 440,
+    overlays: ['title-ian', 'title-ludwig', 'custom-bar', 'k-lines', 'asterisks', 'jp-subtitle', 'jp-vertical'] },
+]
+{
+  const OVERLAY_IDS = ['k-lines', 'title-ian', 'title-ludwig', 'asterisks', 'page-pill', 'jp-subtitle', 'exclusive-feed', 'jp-vertical', 'newyork2', 'barcode', 'star', 'custom-bar']
+  const fx = $('theme-fx')
+  const bgImage = $('bg-image')
+  let current = 0
+  let busy = false
+  const srcFor = (theme, id) => (theme.overlays?.includes(id) ? `media/overlay/${theme.name}/${id}.png` : `media/overlay/${id}.png`)
+  const imgOf = (id) => document.querySelector(`#${id} img.front`) || document.getElementById(id)   // coins hold their image inside
+  const load = (src) => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = src })
+
+  function apply(theme) {
+    for (const id of OVERLAY_IDS) {
+      const img = imgOf(id); const src = srcFor(theme, id)
+      if (img.getAttribute('src') !== src) img.setAttribute('src', src)
+      // the coins' metallic back is a mask of the front: keep it in sync
+      document.querySelector(`#${id} .back`)?.style.setProperty('--face', `url("${src}")`)
+    }
+    if (theme.tile) {
+      bgImage.style.backgroundImage = `url("${theme.tile}")`
+      bgImage.style.backgroundSize = `${theme.tileSize}px`
+      document.body.classList.add('themed')
+    } else {
+      document.body.classList.remove('themed')
+    }
+  }
+
+  // the incoming scene: background (tile, or the live video frame) + every overlay at its on-screen box
+  function drawScene(ctx, W, H, dpr, theme, tile, imgs) {
+    if (tile) {
+      const pat = ctx.createPattern(tile, 'repeat')
+      const s = (theme.tileSize * dpr) / tile.width
+      pat.setTransform(new DOMMatrix().translate(W / 2, H / 2).scale(s))
+      ctx.fillStyle = pat; ctx.fillRect(0, 0, W, H)
+    } else {
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H)
+      const vw = bg.videoWidth, vh = bg.videoHeight
+      if (vw && vh) {   // object-fit: cover
+        const s = Math.max(W / vw, H / vh)
+        ctx.drawImage(bg, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s)
+      }
+    }
+    for (const id of OVERLAY_IDS) {
+      const el = document.getElementById(id)
+      const r = el.getBoundingClientRect()
+      if (r.width && r.height) ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+    }
+  }
+
+  async function switchTheme(i) {
+    if (busy) return
+    busy = true
+    const theme = THEMES[i]
+    try {
+      const [tile, ...list] = await Promise.all([theme.tile ? load(theme.tile) : null, ...OVERLAY_IDS.map((id) => load(srcFor(theme, id)))])
+      const imgs = Object.fromEntries(OVERLAY_IDS.map((id, k) => [id, list[k]]))
+      const dpr = Math.min(devicePixelRatio || 1, 2)
+      const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
+      fx.width = W; fx.height = H; fx.classList.add('on')
+      const scene = document.createElement('canvas'); scene.width = W; scene.height = H
+      const mask = document.createElement('canvas'); mask.width = W; mask.height = H
+      const sctx = scene.getContext('2d'), mctx = mask.getContext('2d'), ctx = fx.getContext('2d')
+      // same clock as the sheets' mosaic: a left→right sweep with noise, each cell popping in
+      const cols = MOSAIC_COLS, rows = Math.max(1, Math.round(cols * (H / W)))
+      const cw = W / cols, ch = H / rows
+      const at = new Float32Array(cols * rows)
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) at[r * cols + c] = (c / cols) * MOSAIC_SWEEP + Math.random() * MOSAIC_NOISE
+      await new Promise((done) => {
+        const t0 = performance.now()
+        const frame = (now) => {
+          const t = (now - t0) / 1000
+          drawScene(sctx, W, H, dpr, theme, tile, imgs)
+          mctx.clearRect(0, 0, W, H); mctx.fillStyle = '#000'
+          for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+            const k = (t - at[r * cols + c]) / MOSAIC_POP
+            if (k <= 0) continue
+            mctx.globalAlpha = k >= 1 ? 1 : k
+            mctx.fillRect(c * cw, r * ch, cw + 0.5, ch + 0.5)
+          }
+          mctx.globalAlpha = 1
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.clearRect(0, 0, W, H); ctx.drawImage(scene, 0, 0)
+          ctx.globalCompositeOperation = 'destination-in'; ctx.drawImage(mask, 0, 0)
+          if (t < MOSAIC_TOTAL) requestAnimationFrame(frame); else done()
+        }
+        requestAnimationFrame(frame)
+      })
+      apply(theme)
+      current = i
+    } catch (e) {
+      apply(theme); current = i   // if an image fails to load, just switch without the effect
+    } finally {
+      // one more painted frame with the real DOM underneath, then the canvas goes away
+      requestAnimationFrame(() => { fx.classList.remove('on'); fx.getContext('2d').clearRect(0, 0, fx.width, fx.height); busy = false })
+    }
+  }
+
+  $('custom-bar').addEventListener('click', (e) => {
+    if (editing) return
+    e.preventDefault(); e.stopPropagation()
+    switchTheme((current + 1) % THEMES.length)
+  })
+}
