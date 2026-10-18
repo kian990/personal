@@ -276,7 +276,19 @@ function setupPanel({ panel, link, close, bodyClass }) {
   document.addEventListener('click', (e) => { if (isOpen() && !panel.contains(e.target)) shut() })
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) shut() })
   link?.addEventListener('click', open)
-  return { panel, isOpen }
+  // instant versions for jumping between sheets: no mosaic, the new sheet's type just wipes in
+  const show = () => {
+    cancelAnimationFrame(panel._raf)
+    document.body.classList.add(bodyClass)
+    panel.classList.remove('closing')
+    panel.classList.add('open', 'solid')
+  }
+  const hide = () => {
+    cancelAnimationFrame(panel._raf)
+    document.body.classList.remove(bodyClass)
+    panel.classList.remove('open', 'solid', 'closing')
+  }
+  return { panel, isOpen, show, hide }
 }
 
 // a click-through gallery inside a sheet: click the frame (or < >, or the arrow keys
@@ -317,7 +329,7 @@ const row = (n, label, value, cls = '') =>
 
 // ——— 005 source_material: episode list with combined views + 8-slot placeholder gallery ———
 const figmaPanel = $('figma-panel')
-setupPanel({ panel: figmaPanel, link: document.querySelector('.tree a.figma-link'), close: $('sm-close'), bodyClass: 'figma' })
+const smSheet = setupPanel({ panel: figmaPanel, link: document.querySelector('.tree a.figma-link'), close: $('sm-close'), bodyClass: 'figma' })
 {
   const setSlides = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel })
   // drop image paths into source-material.json episodes as "image": "media/sm/ep01.jpg" and they replace the placeholders
@@ -336,7 +348,11 @@ setupPanel({ panel: figmaPanel, link: document.querySelector('.tree a.figma-link
 
 // ——— 006 zora_profiles: every guest listed, reel covers in the gallery ———
 const zoraPanel = $('zora-panel')
-setupPanel({ panel: zoraPanel, link: document.querySelector('.tree a.zora-link'), close: $('zora-close'), bodyClass: 'zora' })
+const zoraSheet = setupPanel({ panel: zoraPanel, link: document.querySelector('.tree a.zora-link'), close: $('zora-close'), bodyClass: 'zora' })
+// [>] on 005 → 006, [<] on 006 → 005 (stopPropagation: the click mustn't count as "outside" the new sheet)
+const jump = (from, to) => (e) => { e.stopPropagation(); from.hide(); to.show() }
+$('sm-next').addEventListener('click', jump(smSheet, zoraSheet))
+$('zora-back').addEventListener('click', jump(zoraSheet, smSheet))
 {
   const setSlides = makeGallery({ gallery: $('zora-gallery'), frame: $('zora-frame'), count: $('zora-count'), prev: $('zora-prev'), next: $('zora-next'), panel: zoraPanel })
   fetch('zora-profiles.json')

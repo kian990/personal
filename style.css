@@ -358,6 +358,21 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
   padding: .3em .4em;
 }
 .sm-close:hover { color: #e3001b; }
+/* [>] / [<] beside the [x]: jumps straight to the other sheet */
+.sm-jump {
+  position: absolute;
+  top: 1.2em;
+  right: 3.9em;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--lh-slate);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: .3em .4em;
+}
+.sm-jump:hover { color: var(--lh-blue); }
 
 /* ——— letterhead header (Virgil Abloh Archive style) ——— */
 .lh-row {
