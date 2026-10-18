@@ -15,12 +15,16 @@
 
   <!-- fullscreen background video -->
   <video id="bg" src="media/stringout1.mp4" autoplay loop playsinline preload="auto"></video>
+  <!-- themed background (easter egg: click custom_built_backgrounds.pol) — a tiled image over the video -->
+  <div id="bg-image" aria-hidden="true"></div>
 
   <!-- overlay elements — each one is individual: positioned in style.css, drag them in edit mode (press E) -->
   <div class="stage" id="stage">
     <div class="el coin" id="k-lines"><img class="face front" src="media/overlay/k-lines.png" alt=""><div class="face back"><div class="metal"></div></div></div>
     <div class="el coin" id="title-ian"><img class="face front" src="media/overlay/title-ian.png" alt="ian"><div class="face back"><div class="metal"></div></div></div>
     <div class="el coin" id="title-ludwig"><img class="face front" src="media/overlay/title-ludwig.png" alt="ludwig"><div class="face back"><div class="metal"></div></div></div>
+    <!-- a theme can replace the three title pieces with one image (e.g. the cloud lettering) -->
+    <img class="el" id="title-alt" src="" alt="kian ludwig">
     <img class="el" id="asterisks"      src="media/overlay/asterisks.png"      alt="">
     <img class="el" id="page-pill"      src="media/overlay/page-pill.png"      alt="page_imagery.pol">
     <img class="el" id="jp-subtitle"    src="media/overlay/jp-subtitle.png"    alt="私のホームページ">
@@ -31,6 +35,9 @@
     <img class="el" id="star"           src="media/overlay/star.png"           alt="">
     <img class="el" id="custom-bar"     src="media/overlay/custom-bar.png"     alt="custom_built_backgrounds.pol">
   </div>
+
+  <!-- theme switch: the new scene digitizes in over the old one on this canvas (main.js) -->
+  <canvas id="theme-fx" aria-hidden="true"></canvas>
 
   <!-- nav tree — right side, above everything -->
   <nav class="tree" id="tree">
@@ -47,23 +54,24 @@
         <ul>
           <li><a href="https://sanzo-wada.dmbk.io/" target="_blank" rel="noopener"><i>003 /</i> color_combinations</a></li>
           <li><a href="https://www.are.na/kian-ludwig/cognitive-jiamdnpbaag" target="_blank" rel="noopener"><i>004 /</i> cognitive_archive</a></li>
+          <li><a href="#" class="colorways-link"><i>005 /</i> website_colorways</a></li>
         </ul>
       </li>
       <li class="branch done">
         <span class="cat">[work]</span>
         <ul>
-          <li><a href="#" class="figma-link"><i>005 /</i> <span class="sm">source_material__**__</span><span class="fg">FIGMA</span></a></li>
-          <li><a href="#" class="zora-link"><i>006 /</i> zora_profiles__**__<span class="lc">zora</span></a></li>
-          <li><a href="https://www.youtube.com/watch?v=lj-WFrJ-oeY" target="_blank" rel="noopener"><i>007 /</i> asspizza_therapy_denim__**__<span class="lc">whop</span></a></li>
-          <li><a href="https://www.youtube.com/watch?v=y35nPkK_pHA&amp;list=RDy35nPkK_pHA&amp;start_radio=1" target="_blank" rel="noopener"><i>008 /</i> mimi__**__<span class="lc">judah_weston</span></a></li>
+          <li><a href="#" class="figma-link"><i>006 /</i> <span class="sm">source_material__**__</span><span class="fg">FIGMA</span></a></li>
+          <li><a href="#" class="zora-link"><i>007 /</i> zora_profiles__**__<span class="lc">zora</span></a></li>
+          <li><a href="https://www.youtube.com/watch?v=lj-WFrJ-oeY" target="_blank" rel="noopener"><i>008 /</i> asspizza_therapy_denim__**__<span class="lc">whop</span></a></li>
+          <li><a href="https://www.youtube.com/watch?v=y35nPkK_pHA&amp;list=RDy35nPkK_pHA&amp;start_radio=1" target="_blank" rel="noopener"><i>009 /</i> mimi__**__<span class="lc">judah_weston</span></a></li>
         </ul>
       </li>
       <li class="branch wip">
         <span class="cat">[sites]</span>
         <ul>
-          <li><a href="https://5see.org" target="_blank" rel="noopener"><i>009 /</i> 5see.org</a></li>
-          <li><a href="#"><i>010 /</i> pixel8</a></li>
-          <li><a href="#"><i>011 /</i> socializing_bird</a></li>
+          <li><a href="https://5see.org" target="_blank" rel="noopener"><i>010 /</i> 5see.org</a></li>
+          <li><a href="#"><i>011 /</i> pixel8</a></li>
+          <li><a href="#"><i>012 /</i> socializing_bird</a></li>
         </ul>
       </li>
     </ul>
@@ -72,7 +80,7 @@
   <!-- 005 source_material panel: digitizes in over the video; letterhead header on top -->
   <div id="figma-panel" class="sheet-panel">
     <div class="sheet" id="sheet">
-      <button class="sm-jump" id="sm-next" type="button" aria-label="next: 006 zora_profiles">[&gt;]</button>
+      <button class="sm-jump" id="sm-next" type="button" aria-label="next: 007 zora_profiles">[&gt;]</button>
       <button class="sm-close" id="sm-close" type="button" aria-label="close">[x]</button>
 
       <header class="lh">
@@ -119,7 +127,7 @@
   <!-- 006 zora_profiles panel: the same digitized white sheet as 005 -->
   <div id="zora-panel" class="sheet-panel">
     <div class="sheet">
-      <button class="sm-jump" id="zora-back" type="button" aria-label="back: 005 source_material">[&lt;]</button>
+      <button class="sm-jump" id="zora-back" type="button" aria-label="back: 006 source_material">[&lt;]</button>
       <button class="sm-close" id="zora-close" type="button" aria-label="close">[x]</button>
 
       <header class="lh">

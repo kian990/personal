@@ -19,6 +19,68 @@ body {
 }
 #bg.ready { opacity: 1; }
 
+/* ————— themes (easter egg): clicking custom_built_backgrounds.pol cycles the background
+   and swaps every overlay for a recoloured set (media/overlay/<theme>/) ————— */
+#bg-image {
+  position: fixed;
+  inset: 0;
+  background-position: center;
+  background-repeat: repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+body.themed #bg-image { opacity: 1; }
+body.bg-cover #bg-image { background-size: cover; background-repeat: no-repeat; }   /* full-bleed photo themes */
+/* a theme's single-image title (replaces k / ian / ludwig): spans the same box the three pieces do */
+#title-alt { left: calc(0.6 * var(--u)); top: 0.2%; --w: 71.8; z-index: 5; display: none; pointer-events: none; }
+body.title-alt #title-alt { display: block; }
+body.title-alt :is(#k-lines, #title-ian, #title-ludwig) { visibility: hidden; }
+/* per-theme colours for the live text (the nav tree); the overlays are recoloured PNGs */
+:root { --nav: #1a10d8; }
+body.theme-gingham-green { --nav: #d9468f; }   /* a deeper cut of the title's pink, for legibility */
+body.theme-bliss { --nav: #1d5fd6; }           /* the sky's blue */
+/* gingham: the coin's back is cut diamond instead of brushed metal — the facets slide a little
+   under the pointer, a hard white light band sweeps across them, and a faint rainbow fringe
+   rides with it (same --sx/--sy/--ang the metal uses, so it glistens at rest too) */
+body.theme-gingham-green .coin .back .metal {
+  background:
+    /* a soft spot of light under the pointer, darker toward the edges: reads as a rounded stone */
+    radial-gradient(ellipse 60% 60% at var(--sx) var(--sy), rgba(255, 255, 255, .45), transparent 55%, rgba(10, 10, 40, .35) 130%),
+    /* the hard light band that sweeps across the facets */
+    linear-gradient(var(--ang), transparent 38%, rgba(255, 255, 255, .55) 46%, #fff 50%, rgba(255, 255, 255, .55) 54%, transparent 62%),
+    /* dispersion fringe riding with it */
+    linear-gradient(var(--ang), rgba(255, 110, 200, .35) 0%, rgba(110, 220, 255, .35) 50%, rgba(255, 240, 120, .35) 100%),
+    /* the facets themselves: one fixed scale on every piece (what ludwig had), and they don't slide */
+    url("media/diamond.jpg");
+  background-size: 100% 100%, 320% 320%, 420% 420%, calc(23.4 * var(--u)) auto;
+  background-position: 0 0, var(--sx) var(--sy), var(--sx) var(--sy), center;
+  background-blend-mode: soft-light, screen, overlay, normal;
+}
+/* the stone tilts a few degrees toward the pointer while flipped (on the back face itself, so it
+   answers the mouse immediately instead of riding the slow flip transition) */
+body.theme-gingham-green .coin .back { transition: transform .18s ease-out; }
+body.theme-gingham-green .coin:not(.flipped) .back {
+  transform: rotateY(calc(180deg + var(--ty, 0deg))) rotateX(var(--tx, 0deg));
+}
+/* on gingham the coin is inverted: diamond at rest, the colourway on hover */
+body.theme-gingham-green .coin { transform: perspective(900px) rotateY(180deg); }
+body.theme-gingham-green .coin.flipped { transform: perspective(900px) rotateY(0deg); }
+body.theme-gingham-green .coin .back::before { background: #ffffff; }
+body.theme-gingham-green .coin .back::after  { background: #9a9ab0; }
+body.themed #bg { opacity: 0; transition: none; }   /* the video keeps playing (it's the music) but is hidden */
+#theme-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 30;                 /* over the stage, under the nav tree (40) */
+  width: 100%;
+  height: 100%;
+  display: none;
+  pointer-events: none;
+}
+#theme-fx.on { display: block; }
+body.switching #ipod { z-index: 29; }   /* during a switch the iPod sits under the canvas, which draws its new shell */
+#custom-bar { cursor: pointer; }
+
 /* ————— overlay stage ————— */
 .stage {
   position: fixed;
@@ -152,28 +214,28 @@ body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }
   transition: color .12s, text-shadow .12s;
 }
 .tree .cat {
-  color: #1a10d8;
+  color: var(--nav);
   background: rgba(255, 255, 255, .5);    /* same wrap as the items */
 }
 .tree a {
-  color: #1a10d8;
+  color: var(--nav);
   background: rgba(255, 255, 255, .5);    /* white wrap */
 }
 .tree a i {
   font-style: normal;
-  color: #1a10d8;
+  color: var(--nav);
   opacity: .45;
 }
 /* ——— done sections ([information]): clear at rest, letters blur on hover
    (the highlight block stays crisp — nothing looks pressed) ——— */
 .tree .done :is(.cat, a):hover {
   color: transparent;
-  text-shadow: 0 0 .19em rgba(26, 16, 216, .95);
+  text-shadow: 0 0 .19em color-mix(in srgb, var(--nav) 95%, transparent);
 }
 .tree .done a:hover i {
   color: transparent;
   opacity: 1;
-  text-shadow: 0 0 .19em rgba(26, 16, 216, .45);
+  text-shadow: 0 0 .19em color-mix(in srgb, var(--nav) 45%, transparent);
 }
 
 /* ——— 005 source_material: custom hover colours (number + slash untouched) ——— */
@@ -195,14 +257,14 @@ body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }
 .tree .wip .cat,
 .tree .wip a {
   color: transparent;
-  text-shadow: 0 0 .19em rgba(26, 16, 216, .95);
+  text-shadow: 0 0 .19em color-mix(in srgb, var(--nav) 95%, transparent);
   cursor: default;
   position: relative;
 }
 .tree .wip a i {
   color: transparent;
   opacity: 1;
-  text-shadow: 0 0 .19em rgba(26, 16, 216, .45);
+  text-shadow: 0 0 .19em color-mix(in srgb, var(--nav) 45%, transparent);
 }
 /* …and on hover the blur clears into "loading..." */
 .tree .wip :is(.cat, a):hover {
@@ -215,7 +277,7 @@ body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }
   left: 0;
   top: 0;
   padding: 0 .14em;
-  color: #1a10d8;
+  color: var(--nav);
   text-shadow: none;
 }
 

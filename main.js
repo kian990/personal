@@ -446,10 +446,20 @@ window.addEventListener('pointermove', (e) => {
   const sx = ((1 - sheen.x) * 100 + drift * 100).toFixed(2) + '%'
   const sy = ((1 - sheen.y) * 100 - drift * 60).toFixed(2) + '%'
   const ang = (115 + (sheen.y - 0.5) * 70 + (sheen.x - 0.5) * 30 + drift * 40).toFixed(2) + 'deg'
+  const px = sheen.x * innerWidth, py = sheen.y * innerHeight
   for (const c of coins) {
     c.style.setProperty('--sx', sx)
     c.style.setProperty('--sy', sy)
     c.style.setProperty('--ang', ang)
+    // tilt toward the pointer (used by the diamond back): up to ±8° based on where the
+    // pointer sits relative to this piece's centre
+    {
+      const r = c.getBoundingClientRect()
+      const dx = Math.max(-1, Math.min(1, (px - (r.left + r.width / 2)) / (r.width / 2)))
+      const dy = Math.max(-1, Math.min(1, (py - (r.top + r.height / 2)) / (r.height / 2)))
+      c.style.setProperty('--ty', (-dx * 8).toFixed(2) + 'deg')
+      c.style.setProperty('--tx', (dy * 8).toFixed(2) + 'deg')
+    }
   }
   requestAnimationFrame(glisten)
 })(performance.now())
@@ -644,4 +654,217 @@ window.addEventListener('pointermove', (e) => {
     .then((r) => r.json())
     .then(({ name, tracks: list }) => { playlistName = name || 'playlist'; tracks = list; if (tracks.length) load(0, false); else render() })
     .catch(() => { $('ipod-song').textContent = 'playlist.json not found' })
+}
+
+
+// ————— backgrounds easter egg: clicking custom_built_backgrounds.pol cycles the theme.
+// a theme = a tiled background + a recoloured copy of some overlays (media/overlay/<theme>/).
+// the new scene is drawn on a canvas and digitizes in cell by cell over the old one —————
+const THEMES = [
+  { name: 'video' },   // the original: the video + the original overlay colours
+  { name: 'gingham-green', tile: 'media/bg/gingham-green.webp', tileSize: 440, backFirst: true,   // backFirst: the coin rests on its back (diamond)
+    ipod: 'media/ipod-teal.png',   // the iPod's shell in the theme's cyan
+    overlays: ['title-ian', 'title-ludwig', 'custom-bar', 'k-lines', 'asterisks', 'jp-subtitle', 'jp-vertical'] },
+  { name: 'bliss', cover: 'media/bg/bliss.jpg',   // cover: a full-bleed photo instead of a tile
+    overlayDir: 'gingham-green',                  // borrows gingham's recoloured overlays (same colours for now)
+    overlays: ['title-ian', 'title-ludwig', 'custom-bar', 'k-lines', 'asterisks', 'jp-subtitle', 'jp-vertical'],
+    ipod: 'media/ipod-teal.png',
+    title: 'media/overlay/bliss/kian-ludwig-clouds.png' },   // one image in place of k / ian / ludwig
+]
+{
+  const OVERLAY_IDS = ['k-lines', 'title-ian', 'title-ludwig', 'asterisks', 'page-pill', 'jp-subtitle', 'exclusive-feed', 'jp-vertical', 'newyork2', 'barcode', 'star', 'custom-bar']
+  const fx = $('theme-fx')
+  const bgImage = $('bg-image')
+  const tree = document.querySelector('.tree')
+  let current = 0
+  let busy = false
+  const srcFor = (theme, id) => (theme.overlays?.includes(id) ? `media/overlay/${theme.overlayDir || theme.name}/${id}.png` : `media/overlay/${id}.png`)
+  const imgOf = (id) => document.querySelector(`#${id} img.front`) || document.getElementById(id)   // coins hold their image inside
+  const load = (src) => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = src })
+  const decoded = (im) => (im.decode ? im.decode().catch(() => {}) : Promise.resolve())
+
+  // every theme's images are fetched + decoded in the background after load, so a click starts instantly
+  const assets = new Map()
+  const assetsFor = (theme) => {
+    if (!assets.has(theme.name)) {
+      assets.set(theme.name, (async () => {
+        const [tile, cover, gem, ipodImg, titleImg, ...list] = await Promise.all([
+          theme.tile ? load(theme.tile) : null, theme.cover ? load(theme.cover) : null,
+          theme.backFirst ? load('media/diamond.jpg') : null, load(theme.ipod || 'media/ipod.png'),
+          theme.title ? load(theme.title) : null, ...OVERLAY_IDS.map((id) => load(srcFor(theme, id)))])
+        await Promise.all([tile, cover, gem, ipodImg, titleImg, ...list].filter(Boolean).map(decoded))
+        return { tile, cover, gem, ipodImg, titleImg, imgs: Object.fromEntries(OVERLAY_IDS.map((id, k) => [id, list[k]])) }
+      })())
+    }
+    return assets.get(theme.name)
+  }
+  addEventListener('load', () => setTimeout(() => THEMES.forEach(assetsFor), 1500))
+
+  // the live text (nav) is coloured by style.css per body.theme-<name>
+  const setThemeClass = (theme) => {
+    for (const t of THEMES) document.body.classList.remove(`theme-${t.name}`)
+    document.body.classList.add(`theme-${theme.name}`)
+  }
+  function apply(theme) {
+    for (const id of OVERLAY_IDS) {
+      const img = imgOf(id); const src = srcFor(theme, id)
+      if (img.getAttribute('src') !== src) img.setAttribute('src', src)
+      // the coins' metallic back is a mask of the front: keep it in sync
+      document.querySelector(`#${id} .back`)?.style.setProperty('--face', `url("${src}")`)
+    }
+    // a back-first theme inverts the coin's resting side; mute the flip transition for this
+    // swap so the canvas hand-off is a cut, not a rotation
+    coins.forEach((c) => { c.style.transition = 'none' })
+    setThemeClass(theme)
+    requestAnimationFrame(() => requestAnimationFrame(() => coins.forEach((c) => { c.style.transition = '' })))
+    document.querySelector('#ipod .ipod-body').setAttribute('src', theme.ipod || 'media/ipod.png')
+    // single-image title (clouds) in place of the coin pieces
+    document.body.classList.toggle('title-alt', !!theme.title)
+    if (theme.title) $('title-alt').setAttribute('src', theme.title)
+    if (theme.tile || theme.cover) {
+      bgImage.style.backgroundImage = `url("${theme.tile || theme.cover}")`
+      bgImage.style.backgroundSize = theme.tile ? `${theme.tileSize}px` : ''
+      document.body.classList.toggle('bg-cover', !!theme.cover)
+      document.body.classList.add('themed')
+    } else {
+      document.body.classList.remove('themed', 'bg-cover')
+    }
+  }
+
+  // a coin's resting side on a back-first theme: the diamond, cut to the artwork, with its rim lights —
+  // matches style.css (.coin .back on that theme) so the hand-off is seamless
+  const COIN_IDS = ['k-lines', 'title-ian', 'title-ludwig']
+  const FACET_UNITS = 23.4   // background-size of the facets, in design units (as in style.css)
+  function drawCoinBack(ctx, img, r, dpr, gem) {
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr))
+    const tmp = document.createElement('canvas'); tmp.width = w; tmp.height = h
+    const t = tmp.getContext('2d')
+    const rim = 0.12 * unit() * dpr
+    const stamp = (fill, dx, dy) => {
+      t.globalCompositeOperation = 'source-over'; t.clearRect(0, 0, w, h); t.drawImage(img, 0, 0, w, h)
+      t.globalCompositeOperation = 'source-in'; t.fillStyle = fill; t.fillRect(0, 0, w, h)
+      ctx.drawImage(tmp, r.left * dpr + dx, r.top * dpr + dy)
+    }
+    stamp('#ffffff', -rim, -rim)
+    stamp('#9a9ab0', rim, rim)
+    const tileW = FACET_UNITS * unit() * dpr
+    const pat = t.createPattern(gem, 'repeat')
+    pat.setTransform(new DOMMatrix().translate((w - tileW) / 2, (h - tileW * gem.height / gem.width) / 2).scale(tileW / gem.width))
+    stamp(pat, 0, 0)
+  }
+
+  // the incoming scene: background (tile, or the live video frame) + every overlay at its on-screen box
+  // draw an image to cover the whole canvas (CSS background-size: cover / object-fit: cover)
+  const drawCover = (ctx, im, W, H) => {
+    const iw = im.videoWidth || im.naturalWidth || im.width, ih = im.videoHeight || im.naturalHeight || im.height
+    if (!iw || !ih) return
+    const s = Math.max(W / iw, H / ih)
+    ctx.drawImage(im, (W - iw * s) / 2, (H - ih * s) / 2, iw * s, ih * s)
+  }
+  function drawScene(ctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg) {
+    if (tile) {
+      ctx.fillStyle = pat; ctx.fillRect(0, 0, W, H)
+    } else if (cover) {
+      drawCover(ctx, cover, W, H)
+    } else {
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H)
+      const vw = bg.videoWidth, vh = bg.videoHeight
+      if (vw && vh) {   // object-fit: cover
+        const s = Math.max(W / vw, H / vh)
+        ctx.drawImage(bg, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s)
+      }
+    }
+    for (const id of OVERLAY_IDS) {
+      if (titleImg && COIN_IDS.includes(id)) continue   // the title is one image on this theme (drawn below)
+      const r = document.getElementById(id).getBoundingClientRect()
+      if (!r.width || !r.height) continue
+      if (theme.backFirst && gem && COIN_IDS.includes(id)) drawCoinBack(ctx, imgs[id], r, dpr, gem)
+      else ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+    }
+    if (titleImg) {
+      // same box #title-alt gets from style.css (left .6u, top .2%, width 71.8u); it's display:none until the hand-off
+      const w = 71.8 * unit(), h = w * titleImg.naturalHeight / titleImg.naturalWidth
+      ctx.drawImage(titleImg, 0.6 * unit() * dpr, innerHeight * 0.002 * dpr, w * dpr, h * dpr)
+    }
+    // the iPod's shell in the new theme's colour, wherever it currently sits (tucked or raised)
+    if (ipodImg) {
+      const r = document.querySelector('#ipod .ipod-body').getBoundingClientRect()
+      if (r.width && r.top < innerHeight) ctx.drawImage(ipodImg, r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+    }
+  }
+
+  async function switchTheme(i) {
+    if (busy) return
+    busy = true
+    const theme = THEMES[i]
+    try {
+      const { tile, imgs, gem, ipodImg, cover, titleImg } = await assetsFor(theme)
+      document.body.classList.add('switching')
+      const dpr = Math.min(devicePixelRatio || 1, 2)   // match the page exactly, so nothing shifts when the canvas comes away
+      const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
+      fx.width = W; fx.height = H
+      const scene = document.createElement('canvas'); scene.width = W; scene.height = H
+      const mask = document.createElement('canvas'); mask.width = W; mask.height = H
+      const sctx = scene.getContext('2d'), mctx = mask.getContext('2d'), ctx = fx.getContext('2d')
+      let pat = null
+      if (tile) {
+        pat = sctx.createPattern(tile, 'repeat')
+        // same placement as CSS `background-position: center`: a tile is centred on the screen
+        const ts = theme.tileSize * dpr
+        pat.setTransform(new DOMMatrix().translate(W / 2 - ts / 2, H / 2 - ts / 2).scale(ts / tile.width))
+      }
+      // same clock as the sheets' mosaic: a left→right sweep with noise, each cell popping in
+      const cols = MOSAIC_COLS, rows = Math.max(1, Math.round(cols * (H / W)))
+      const cw = W / cols, ch = H / rows
+      const at = new Float32Array(cols * rows)
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) at[r * cols + c] = (c / cols) * MOSAIC_SWEEP + Math.random() * MOSAIC_NOISE
+      // the nav sits above the canvas, so its colour flips the moment the sweep reaches it
+      const navAt = (tree.getBoundingClientRect().left / innerWidth) * MOSAIC_SWEEP + MOSAIC_NOISE * 0.5
+      let navDone = false
+      if (tile || cover) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg)   // static scene: draw once
+      fx.classList.add('on')
+      await new Promise((done) => {
+        const t0 = performance.now()
+        const frame = (now) => {
+          const t = (now - t0) / 1000
+          if (!tile && !cover) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg)   // live video frame: redraw
+          mctx.clearRect(0, 0, W, H); mctx.fillStyle = '#000'
+          for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+            const k = (t - at[r * cols + c]) / MOSAIC_POP
+            if (k <= 0) continue
+            mctx.globalAlpha = k >= 1 ? 1 : k
+            mctx.fillRect(c * cw, r * ch, cw + 0.5, ch + 0.5)
+          }
+          mctx.globalAlpha = 1
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.clearRect(0, 0, W, H); ctx.drawImage(scene, 0, 0)
+          ctx.globalCompositeOperation = 'destination-in'; ctx.drawImage(mask, 0, 0)
+          if (!navDone && t >= navAt) { navDone = true; setThemeClass(theme) }
+          if (t < MOSAIC_TOTAL) requestAnimationFrame(frame); else done()
+        }
+        requestAnimationFrame(frame)
+      })
+      apply(theme)
+      current = i
+      // keep the canvas up until the swapped-in overlays have decoded and painted (no blank flash)
+      await Promise.all(OVERLAY_IDS.map((id) => decoded(imgOf(id))))
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
+    } catch (e) {
+      apply(theme); current = i   // if an image fails to load, just switch without the effect
+    } finally {
+      fx.classList.remove('on')
+      fx.getContext('2d').clearRect(0, 0, fx.width, fx.height)
+      document.body.classList.remove('switching')
+      busy = false
+    }
+  }
+
+  // clicking custom_built_backgrounds.pol or the WEBSITE_COLORWAYS nav item steps to the next theme
+  const nextTheme = (e) => {
+    if (editing) return
+    e.preventDefault(); e.stopPropagation()
+    switchTheme((current + 1) % THEMES.length)
+  }
+  $('custom-bar').addEventListener('click', nextTheme)
+  document.querySelector('.tree a.colorways-link')?.addEventListener('click', nextTheme)
 }
