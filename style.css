@@ -67,6 +67,7 @@ body {
   cursor: pointer;
   --sx: 50%;
   --sy: 50%;
+  --ang: 115deg;
 }
 .coin.flipped { transform: perspective(900px) rotateY(180deg); }
 .coin .face {
@@ -83,20 +84,38 @@ body {
   position: absolute;
   inset: 0;
   transform: rotateY(180deg);
+  --rim: calc(.12 * var(--u));   /* bevel depth, scales with the composition */
+  /* a soft drop shadow lifts the badge off the page */
+  filter: drop-shadow(0 calc(.25 * var(--u)) calc(.5 * var(--u)) rgba(20, 20, 60, .25));
+}
+/* every layer of the back is the artwork's silhouette: the mask does the shaping */
+.coin .back::before, .coin .back::after, .coin .back .metal {
+  content: '';
+  position: absolute;
+  inset: 0;
   -webkit-mask: var(--face) center / 100% 100% no-repeat;
           mask: var(--face) center / 100% 100% no-repeat;
+}
+/* emboss: a light rim peeking out top-left, a dark rim bottom-right */
+.coin .back::before { background: #fbfbfd; transform: translate(calc(-1 * var(--rim)), calc(-1 * var(--rim))); }
+.coin .back::after  { background: #5e5e70; transform: translate(var(--rim), var(--rim)); }
+.coin .back .metal {
+  z-index: 1;
   background:
-    /* holographic tint riding on top of the metal */
-    linear-gradient(115deg,
-      rgba(184, 184, 255, .55), rgba(166, 230, 219, .55) 35%,
-      rgba(255, 179, 240, .55) 65%, rgba(184, 184, 255, .55)),
-    /* brushed silver: dark–light–dark bands that slide under the mask */
-    linear-gradient(115deg,
-      #7d7d7d 0%, #f2f2f2 16%, #9a9a9a 30%, #ffffff 46%,
-      #7a7a7a 60%, #e6e6e6 76%, #8a8a8a 100%);
-  background-size: 300% 300%, 300% 300%;
-  background-position: var(--sx) var(--sy), var(--sx) var(--sy);
-  background-blend-mode: soft-light, normal;
+    /* fine film grain */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .5 0'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>"),
+    /* holographic tint: mauve → white → blue → slate → pink — broad, saturated bands;
+       the white stops keep the highlights pure silver */
+    linear-gradient(var(--ang),
+      #c893b8 0%, #ffffff 14%, #9cbfe6 30%, #7c7f94 44%,
+      #f0c6d8 58%, #ffffff 70%, #a6b4e0 84%, #c893b8 100%),
+    /* brushed silver with real depth: deep slate to pure white */
+    linear-gradient(var(--ang),
+      #666672 0%, #f8f8fb 14%, #8a8a97 28%, #ffffff 44%,
+      #6d6d79 58%, #eeeef3 72%, #7e7e8a 86%, #f4f4f7 100%);
+  background-size: 160px 160px, 420% 420%, 420% 420%;
+  background-position: 0 0, var(--sx) var(--sy), var(--sx) var(--sy);
+  background-blend-mode: soft-light, multiply, normal;
 }
 /* no flipping while laying things out */
 body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }

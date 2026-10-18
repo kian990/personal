@@ -108,6 +108,7 @@ document.addEventListener('keydown', (e) => {
         return `#${id} { ${parts.join('; ')}; }`
       })
       .join('\n')
+    setTimeout(measureCoins, 50)
     if (css) {
       if (mode === 'mobile') css = `@media (max-width: 768px) {\n${css.replace(/^/gm, '  ')}\n}`
       console.log(`--- updated ${mode.toUpperCase()} positions ---\n` + css)
@@ -334,15 +335,31 @@ coins.forEach((coin) => {
   coin.querySelector('.back').style.setProperty('--face', `url("${front.getAttribute('src')}")`)
 })
 const setFlipped = (on) => coins.forEach((c) => c.classList.toggle('flipped', on))
-coins.forEach((coin) => {
-  coin.addEventListener('pointerenter', (e) => { if (!editing && e.pointerType !== 'touch') setFlipped(true) })
-  coin.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') setFlipped(false) })
-  // touch: tap toggles
-  coin.addEventListener('click', (e) => {
-    if (editing) return
-    if (matchMedia('(hover: none)').matches) setFlipped(!coin.classList.contains('flipped'))
+
+// hover is judged against the coins' resting boxes (measured while flat), not the
+// moving elements — a coin turned edge-on would otherwise "leave" and flip back
+let coinBoxes = []
+function measureCoins() {
+  if (coins.some((c) => c.classList.contains('flipped'))) return
+  const pad = 6
+  coinBoxes = coins.map((c) => {
+    const r = c.getBoundingClientRect()
+    return { l: r.left - pad, t: r.top - pad, r: r.right + pad, b: r.bottom + pad }
   })
+}
+const overCoins = (x, y) => coinBoxes.some((b) => x >= b.l && x <= b.r && y >= b.t && y <= b.b)
+measureCoins()
+window.addEventListener('resize', () => { setFlipped(false); setTimeout(measureCoins, 50) })
+window.addEventListener('load', measureCoins)
+window.addEventListener('pointermove', (e) => {
+  if (editing || e.pointerType === 'touch') return
+  setFlipped(overCoins(e.clientX, e.clientY))
 })
+// touch: tap toggles
+coins.forEach((coin) => coin.addEventListener('click', () => {
+  if (editing) return
+  if (matchMedia('(hover: none)').matches) setFlipped(!coin.classList.contains('flipped'))
+}))
 
 // sheen: pointer position (eased) + a slow drift
 const sheen = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 }
@@ -355,10 +372,16 @@ window.addEventListener('pointermove', (e) => {
   sheen.x += (sheen.tx - sheen.x) * 0.08
   sheen.y += (sheen.ty - sheen.y) * 0.08
   const drift = Math.sin(t * 0.6) * 0.08
-  // the gradient slides opposite to the pointer, like light moving across metal
+  // the bands slide opposite to the pointer, like light moving across metal, and the
+  // gradient tilts with it so the colours shift as well as travel
   const sx = ((1 - sheen.x) * 100 + drift * 100).toFixed(2) + '%'
   const sy = ((1 - sheen.y) * 100 - drift * 60).toFixed(2) + '%'
-  for (const c of coins) { c.style.setProperty('--sx', sx); c.style.setProperty('--sy', sy) }
+  const ang = (115 + (sheen.y - 0.5) * 70 + (sheen.x - 0.5) * 30 + drift * 40).toFixed(2) + 'deg'
+  for (const c of coins) {
+    c.style.setProperty('--sx', sx)
+    c.style.setProperty('--sy', sy)
+    c.style.setProperty('--ang', ang)
+  }
   requestAnimationFrame(glisten)
 })(performance.now())
 
