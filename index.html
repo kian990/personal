@@ -6,6 +6,9 @@
   <title>kian ludwig</title>
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,9 +18,9 @@
 
   <!-- overlay elements — each one is individual: positioned in style.css, drag them in edit mode (press E) -->
   <div class="stage" id="stage">
-    <img class="el" id="k-lines"        src="media/overlay/k-lines.png"        alt="">
-    <img class="el" id="title-ian"      src="media/overlay/title-ian.png"      alt="ian">
-    <img class="el" id="title-ludwig"   src="media/overlay/title-ludwig.png"   alt="ludwig">
+    <div class="el coin" id="k-lines"><img class="face front" src="media/overlay/k-lines.png" alt=""><div class="face back"></div></div>
+    <div class="el coin" id="title-ian"><img class="face front" src="media/overlay/title-ian.png" alt="ian"><div class="face back"></div></div>
+    <div class="el coin" id="title-ludwig"><img class="face front" src="media/overlay/title-ludwig.png" alt="ludwig"><div class="face back"></div></div>
     <img class="el" id="asterisks"      src="media/overlay/asterisks.png"      alt="">
     <img class="el" id="page-pill"      src="media/overlay/page-pill.png"      alt="page_imagery.pol">
     <img class="el" id="jp-subtitle"    src="media/overlay/jp-subtitle.png"    alt="私のホームページ">
@@ -39,20 +42,20 @@
           <li><a href="https://www.linkedin.com/in/kianludwig" target="_blank" rel="noopener"><i>002 /</i> curriculum_vitae</a></li>
         </ul>
       </li>
-      <li class="branch wip">
-        <span class="cat">[imagery]</span>
+      <li class="branch done">
+        <span class="cat">[imagery__*__sources]</span>
         <ul>
-          <li><a href="#"><i>003 /</i> visual_stimulants</a></li>
-          <li><a href="#"><i>004 /</i> cognitive_archive</a></li>
+          <li><a href="https://sanzo-wada.dmbk.io/" target="_blank" rel="noopener"><i>003 /</i> color_combinations</a></li>
+          <li><a href="https://www.are.na/kian-ludwig/cognitive-jiamdnpbaag" target="_blank" rel="noopener"><i>004 /</i> cognitive_archive</a></li>
         </ul>
       </li>
-      <li class="branch wip">
+      <li class="branch done">
         <span class="cat">[work]</span>
         <ul>
-          <li><a href="#"><i>005 /</i> editing_and_video</a></li>
-          <li><a href="#"><i>006 /</i> interviews</a></li>
-          <li><a href="#"><i>007 /</i> creative_production</a></li>
-          <li><a href="#"><i>008 /</i> events_and_spaces</a></li>
+          <li><a href="#" class="figma-link"><i>005 /</i> <span class="sm">source_material__**__</span><span class="fg">FIGMA</span></a></li>
+          <li class="wip"><a href="#"><i>006 /</i> interviews</a></li>
+          <li class="wip"><a href="#"><i>007 /</i> creative_production</a></li>
+          <li class="wip"><a href="#"><i>008 /</i> events_and_spaces</a></li>
         </ul>
       </li>
       <li class="branch wip">
@@ -65,6 +68,49 @@
       </li>
     </ul>
   </nav>
+
+  <!-- 005 source_material panel: digitizes in over the video; letterhead header on top -->
+  <div id="figma-panel">
+    <div class="sheet" id="sheet">
+      <button class="sm-close" id="sm-close" type="button" aria-label="close">[x]</button>
+
+      <header class="lh">
+        <div class="lh-row lh-top">
+          <span class="lh-subject"><b>SUBJECT:</b> SOURCE MATERIAL &mdash; SEASON 01</span>
+          <span><b>DATE:</b> <time id="lh-date">MM/DD/YY</time></span>
+          <span class="lh-right">&copy; FIGMA, 2026</span>
+        </div>
+        <div class="lh-mid">
+          <img class="lh-logo" src="media/sm-logo.png" alt="source material">
+          <div class="lh-dots"></div>
+        </div>
+        <div class="lh-row lh-bottom">
+          <span>S01</span>
+          <span><b>ROLE:</b> LEAD EDITOR</span>
+          <span><b>FORMAT:</b> 8 EPISODES</span>
+          <span><b>CHANNELS:</b> YT / IG / X</span>
+        </div>
+      </header>
+
+      <!-- body: episode list (small, centred in the left column) + click-through gallery on the right -->
+      <div class="sm-body">
+        <div class="sm-col sm-left">
+          <ol class="ep-list" id="ep-list"></ol>
+        </div>
+        <div class="sm-col sm-right">
+          <figure class="ep-gallery" id="ep-gallery" title="click to advance">
+            <div class="ep-frame" id="ep-frame"></div>
+            <figcaption class="ep-caption">
+              <button type="button" class="ep-nav" id="ep-prev" aria-label="previous">&lt;</button>
+              <span id="ep-count">01 / 08</span>
+              <button type="button" class="ep-nav" id="ep-next" aria-label="next">&gt;</button>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <button id="sound" type="button">sound off</button>
 
