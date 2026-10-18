@@ -1,0 +1,47 @@
+{
+  "series": {
+    "title": "Zora Profiles",
+    "for": "Zora",
+    "channel": "@our.zora",
+    "format": "Instagram Reels",
+    "episodes": "45+",
+    "roles": ["creative producer", "interviewer", "video editor", "creator"]
+  },
+  "_note": "profiles: one per guest, in cover order — add the rest of the 45+ here (image is optional). unsorted: covers whose overlay is a title rather than a handle; move any into profiles if they belong.",
+  "profiles": [
+    { "name": "$hartofalion",    "image": "images/zora/573730542_1997361691109582_9167031353185000067_n.jpg" },
+    { "name": "$k4lana",         "image": "images/zora/573823303_18085418608988198_4991405721870614326_n.jpg" },
+    { "name": "$calvinlpos",     "image": "images/zora/581368051_2294744501002084_3755690896246473602_n.jpg" },
+    { "name": "$blissfullperc30","image": "images/zora/582276390_4153922058256098_624550341865062444_n.jpg" },
+    { "name": "$deaavdulla",     "image": "images/zora/587235255_1915216745733806_769031112709212031_n.jpg" },
+    { "name": "$dresif",         "image": "images/zora/587764774_1112915674040364_3022953149730978724_n.jpg" },
+    { "name": "$31camo",         "image": "images/zora/587802353_851981030876388_4826983702932789751_n.jpg" },
+    { "name": "$yochill",        "image": "images/zora/587809664_18088610869988198_8544303872881045452_n.jpg" },
+    { "name": "$masabeep",       "image": "images/zora/588409485_1369243644080973_2301317583729259552_n.jpg" },
+    { "name": "$buckeshot",      "image": "images/zora/588596926_1514101816318026_1844111341262074758_n.jpg" },
+    { "name": "$tanijuh",        "image": "images/zora/600338562_747748081069436_3748938381383272622_n.jpg" },
+    { "name": "$luxmon",         "image": "images/zora/603488544_842286938701241_265808132389175868_n.jpg" },
+    { "name": "$hiiihorse",      "image": "images/zora/609431949_1568923211041257_5953863383842611774_n.jpg" },
+    { "name": "$kk898x",         "image": "images/zora/610690305_1265339908754574_2699792625273787704_n.jpg" },
+    { "name": "$d9lton",         "image": "images/zora/611279707_1620137112341260_7953893017188374957_n.jpg" },
+    { "name": "$jordanhubert334","image": "images/zora/612236966_901841045750218_6256082055976434445_n.jpg" },
+    { "name": "$jessicunt",      "image": "images/zora/617901919_1782698109016287_8424690308392696218_n.jpg" },
+    { "name": "$sophiawilson",   "image": "images/zora/622555584_2294205971072641_7580761961205812752_n.jpg" },
+    { "name": "$judahweston",    "image": "images/zora/626278594_1416419596592922_2779593305071363439_n.jpg" },
+    { "name": "$humane",         "image": "images/zora/639719705_785593024012723_4645929918260062597_n.jpg" },
+    { "name": "$henry",          "image": "images/zora/642505010_1633983874512271_3354285874051987040_n.jpg" },
+    { "name": "$sadprt",         "image": "images/zora/648556807_1436862037299248_5054037167974406892_n.jpg" },
+    { "name": "$jean",           "image": "images/zora/652006211_1425543628881167_3148337635942406640_n.jpg" },
+    { "name": "$libertylove",    "image": "images/zora/654685559_869819182691170_2586190055226542134_n.jpg" },
+    { "name": "$jacob",          "image": "images/zora/655666201_982076640820011_5330700687583312630_n.jpg" },
+    { "name": "$sorisa",         "image": "images/zora/657738754_1716957046381862_10894481889724887_n.jpg" },
+    { "name": "$avalions",       "image": "images/zora/658799781_18099618010988198_1409007503395975576_n.jpg" }
+  ],
+  "unsorted": [
+    { "name": "Longevity as luxury", "image": "images/zora/637715024_18094862362988198_8621831933781019531_n.jpg" },
+    { "name": "Jestermaxxing",       "image": "images/zora/642801802_18095600098988198_1409765516851134195_n.jpg" },
+    { "name": "New Gen Media",       "image": "images/zora/651012545_18096806560988198_5668352014503870122_n.jpg" },
+    { "name": "AI Report",           "image": "images/zora/652720660_18098070706988198_189810302298414502_n.jpg" },
+    { "name": "Language Report",     "image": "images/zora/658039750_18099422941988198_1301926902526022427_n.jpg" }
+  ]
+}

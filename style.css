@@ -287,8 +287,8 @@ body.whoami :is(#bg, .stage, .tree, #sound) { filter: blur(5px); }
 /* ————— 005 source_material panel: overlays fade out, a big translucent white
    box fades in over the still-playing video (room on every side) ————— */
 .stage, .tree, #sound { transition: opacity .6s ease, filter .45s ease; }
-body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
-#figma-panel {
+body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
+.sheet-panel {
   position: fixed;
   inset: 0;                            /* full bleed: a new page over the video */
   z-index: 100;
@@ -296,11 +296,11 @@ body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
   cursor: pointer;
   overflow: hidden;
 }
-#figma-panel.open { pointer-events: auto; }
+.sheet-panel.open { pointer-events: auto; }
 /* once the mosaic has filled in, the box becomes one clean solid wrap */
-#figma-panel.solid { background: #fff; }   /* solid white page once the mosaic has filled in */
+.sheet-panel.solid { background: #fff; }   /* solid white page once the mosaic has filled in */
 /* the mosaic canvas (drawn by main.js) fills the box under the letterhead */
-#figma-panel .mosaic {
+.sheet-panel .mosaic {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -335,11 +335,11 @@ body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
      same clock as the cell sweep, so the type digitizes in with the box */
   clip-path: inset(0 100% 0 0);
 }
-#figma-panel.open .sheet {
+.sheet-panel.open .sheet {
   clip-path: inset(0 0 0 0);
   transition: clip-path .9s steps(48, end);
 }
-#figma-panel.closing .sheet {
+.sheet-panel.closing .sheet {
   clip-path: inset(0 0 0 100%);
   transition: clip-path .9s steps(48, end);
 }
@@ -497,6 +497,41 @@ body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
 }
 .ep-nav:hover { color: #e3001b; }
 
+/* ——— 006 zora_profiles sheet ——— */
+.lh-word {                       /* text wordmark where 005 has the logo image */
+  font-size: 3.4em;
+  line-height: .95;
+  letter-spacing: -.08em;
+  font-weight: 400;
+}
+.sm-stack { display: flex; flex-direction: column; gap: 1.6em; width: 100%; max-width: 46em; }
+.sm-blurb {
+  margin: 0;
+  font-size: .95em;
+  line-height: 1.5;
+  color: var(--lh-slate);
+}
+/* every guest, flowed into two columns so 45+ names fit the sheet */
+.name-list {
+  font-size: .95em;
+  line-height: 1.55;
+  columns: 2;
+  column-gap: 2.5em;
+}
+.name-list li { break-inside: avoid; }
+.name-list .ep-guest { text-transform: none; }   /* $handles as written on the covers */
+.name-list .ep-guest::after { content: none; }
+/* reel covers are vertical: the frame is 9:16, sized by the column's height */
+.ep-gallery { height: 100%; }
+.zora-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: auto;
+  max-height: none;
+  aspect-ratio: 9 / 16;
+  align-self: center;
+}
+
 /* ————— edit mode ————— */
 body.editing .el { outline: 1px dashed rgba(255, 0, 128, .8); cursor: grab; }
 body.editing .el:active { cursor: grabbing; }
@@ -548,6 +583,9 @@ body.editing .el:active { cursor: grabbing; }
   .sm-body { grid-template-columns: 1fr; gap: 2em 0; padding-top: 2em; }
   .sm-left { justify-content: flex-start; }
   .ep-list { font-size: 1.15em; }
+  .name-list { font-size: 1em; }
+  .lh-word { font-size: 2.6em; }
+  .zora-frame { flex: 0 0 auto; width: 70%; align-self: flex-start; }
 
   /* nav tree: its own clear band under the title cluster */
   .tree {

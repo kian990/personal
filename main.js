@@ -190,14 +190,13 @@ document.addEventListener('keydown', (e) => {
 const whoLink = [...document.querySelectorAll('.tree a')].find((a) => a.textContent.includes('who_am_i'))
 whoLink?.addEventListener('click', openWhoami)
 
-// ————— 005 source_material — everything fades into a big white box; video + music keep going —————
-const figmaPanel = document.getElementById('figma-panel')
-// letterhead date: today as MM/DD/YY
+// ————— 005 / 006 sheet panels — everything fades into a big white box; video + music keep going —————
+// letterhead date: today as MM/DD/YY (every sheet shares it)
 {
   const d = new Date()
   const two = (n) => String(n).padStart(2, '0')
-  document.getElementById('lh-date').textContent =
-    `${two(d.getMonth() + 1)}/${two(d.getDate())}/${String(d.getFullYear()).slice(-2)}`
+  const date = `${two(d.getMonth() + 1)}/${two(d.getDate())}/${String(d.getFullYear()).slice(-2)}`
+  document.querySelectorAll('.lh-date').forEach((t) => { t.textContent = date })
 }
 
 // the box digitizes in as a pixel mosaic drawn on a canvas (no DOM churn, so it
@@ -210,16 +209,11 @@ const MOSAIC_POP = 0.18    // s — each cell's own fade
 const MOSAIC_TOTAL = MOSAIC_SWEEP + MOSAIC_NOISE + MOSAIC_POP
 const MOSAIC_FILL = '#fff'
 
-const mosaic = document.createElement('canvas')
-mosaic.className = 'mosaic'
-figmaPanel.prepend(mosaic)
-const mctx = mosaic.getContext('2d')
-let mosaicRaf = 0
-
-function runMosaic(reverse, done) {
-  cancelAnimationFrame(mosaicRaf)
+function runMosaic(panel, mosaic, reverse, done) {
+  cancelAnimationFrame(panel._raf)
+  const mctx = mosaic.getContext('2d')
   const dpr = Math.min(devicePixelRatio || 1, 2)
-  const { width, height } = figmaPanel.getBoundingClientRect()
+  const { width, height } = panel.getBoundingClientRect()
   mosaic.width = Math.round(width * dpr)
   mosaic.height = Math.round(height * dpr)
   const cols = MOSAIC_COLS
@@ -247,86 +241,115 @@ function runMosaic(reverse, done) {
       }
     }
     mctx.globalAlpha = 1
-    if (t < MOSAIC_TOTAL) mosaicRaf = requestAnimationFrame(frame)
+    if (t < MOSAIC_TOTAL) panel._raf = requestAnimationFrame(frame)
     else { mctx.clearRect(0, 0, mosaic.width, mosaic.height); done() }
   }
-  mosaicRaf = requestAnimationFrame(frame)
+  panel._raf = requestAnimationFrame(frame)
 }
 
-function openFigma(e) {
-  e.preventDefault()
-  e.stopPropagation()   // so the opening click doesn't count as a click outside the box
-  if (figmaPanel.classList.contains('open')) return
-  document.body.classList.add('figma')
-  figmaPanel.classList.remove('closing', 'solid')
-  figmaPanel.classList.add('open')
-  // once every cell is in, the canvas clears and the box becomes one clean solid wrap
-  runMosaic(false, () => figmaPanel.classList.add('solid'))
+// one sheet panel: a nav link opens it, [x] / Escape / clicking outside closes it.
+// bodyClass is what fades the homepage out while it's open.
+function setupPanel({ panel, link, close, bodyClass }) {
+  const mosaic = document.createElement('canvas')
+  mosaic.className = 'mosaic'
+  panel.prepend(mosaic)
+  const isOpen = () => panel.classList.contains('open')
+  const open = (e) => {
+    e.preventDefault()
+    e.stopPropagation()   // so the opening click doesn't count as a click outside the box
+    if (isOpen()) return
+    document.body.classList.add(bodyClass)
+    panel.classList.remove('closing', 'solid')
+    panel.classList.add('open')
+    // once every cell is in, the canvas clears and the box becomes one clean solid wrap
+    runMosaic(panel, mosaic, false, () => panel.classList.add('solid'))
+  }
+  const shut = () => {
+    if (!isOpen()) return
+    document.body.classList.remove(bodyClass)
+    panel.classList.remove('open', 'solid')
+    panel.classList.add('closing')
+    runMosaic(panel, mosaic, true, () => panel.classList.remove('closing'))
+  }
+  close.addEventListener('click', shut)
+  // clicking the gutter around the box (anything outside the panel) closes it too
+  document.addEventListener('click', (e) => { if (isOpen() && !panel.contains(e.target)) shut() })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) shut() })
+  link?.addEventListener('click', open)
+  return { panel, isOpen }
 }
-function closeFigma() {
-  if (!figmaPanel.classList.contains('open')) return
-  document.body.classList.remove('figma')
-  figmaPanel.classList.remove('open', 'solid')
-  figmaPanel.classList.add('closing')
-  runMosaic(true, () => figmaPanel.classList.remove('closing'))
-}
-document.getElementById('sm-close').addEventListener('click', closeFigma)
-// clicking the gutter around the box (anything outside the panel) closes it too
-document.addEventListener('click', (e) => {
-  if (figmaPanel.classList.contains('open') && !figmaPanel.contains(e.target)) closeFigma()
-})
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && figmaPanel.classList.contains('open')) closeFigma()
-})
-document.querySelector('.tree a.figma-link')?.addEventListener('click', openFigma)
 
-// episode list (left column) + placeholder gallery (right column), fed by source-material.json
-{
-  const list = document.getElementById('ep-list')
-  const frame = document.getElementById('ep-frame')
-  const count = document.getElementById('ep-count')
+// a click-through gallery inside a sheet: click the frame (or < >, or the arrow keys
+// while the panel is open) to advance. slides are image paths; null = dotted placeholder
+function makeGallery({ gallery, frame, count, prev, next, panel }) {
   const two = (n) => String(n).padStart(2, '0')
-  const fmt = (n) => n.toLocaleString('en-US')
-
-  // gallery: one slot per episode; drop image paths in here (e.g. 'media/sm/ep01.jpg')
-  // and they replace the placeholder — null slots stay as the dotted frame
-  let slides = Array(8).fill(null)
+  let slides = [null]
   let slide = 0
   const show = (i, animate = true) => {
     slide = (i + slides.length) % slides.length
-    const src = slides[slide]
-    frame.innerHTML = src
-      ? `<img src="${src}" alt="episode ${two(slide + 1)}">`
+    const s = slides[slide]
+    frame.innerHTML = s?.src
+      ? `<img src="${s.src}" alt="${s.name || 'slide ' + two(slide + 1)}">`
       : `<span class="ep-ph">[ image ${two(slide + 1)} / ${two(slides.length)} ]</span>`
-    count.textContent = `${two(slide + 1)} / ${two(slides.length)}`
+    count.textContent = (s?.name ? s.name + ' · ' : '') + `${two(slide + 1)} / ${two(slides.length)}`
     if (animate) { frame.classList.remove('flip'); void frame.offsetWidth; frame.classList.add('flip') }
   }
   const step = (d) => (e) => { e.stopPropagation(); show(slide + d) }
-  document.getElementById('ep-gallery').addEventListener('click', step(1))
-  document.getElementById('ep-prev').addEventListener('click', step(-1))
-  document.getElementById('ep-next').addEventListener('click', step(1))
+  gallery.addEventListener('click', step(1))
+  prev.addEventListener('click', step(-1))
+  next.addEventListener('click', step(1))
   document.addEventListener('keydown', (e) => {
-    if (!figmaPanel.classList.contains('open')) return
+    if (!panel.classList.contains('open')) return
     if (e.key === 'ArrowRight') show(slide + 1)
     if (e.key === 'ArrowLeft') show(slide - 1)
   })
   show(0, false)
+  // set the slides: each is { src, name } (src null = placeholder)
+  return (list) => { slides = list.length ? list : [null]; show(0, false) }
+}
 
+const $ = (id) => document.getElementById(id)
+const slug = (s) => s.replace(/\s*\(.*?\)/g, '').trim().toLowerCase().replace(/\s+/g, '_')
+const fmt = (n) => n.toLocaleString('en-US')
+const two = (n) => String(n).padStart(2, '0')
+const row = (n, label, value, cls = '') =>
+  `<li class="${cls}"><span class="ep-n">${n}</span><span class="ep-guest">${label}</span><span class="ep-views">${value}</span></li>`
+
+// ——— 005 source_material: episode list with combined views + 8-slot placeholder gallery ———
+const figmaPanel = $('figma-panel')
+setupPanel({ panel: figmaPanel, link: document.querySelector('.tree a.figma-link'), close: $('sm-close'), bodyClass: 'figma' })
+{
+  const setSlides = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel })
+  // drop image paths into source-material.json episodes as "image": "media/sm/ep01.jpg" and they replace the placeholders
+  setSlides(Array(8).fill(null))
   fetch('source-material.json')
     .then((r) => r.json())
     .then(({ episodes }) => {
       const total = (ep) => (ep.youtube?.views || 0) + (ep.x?.views || 0)
-      const row = (n, guest, views, cls = '') =>
-        `<li class="${cls}"><span class="ep-n">${n}</span><span class="ep-guest">${guest}</span><span class="ep-views">${views}</span></li>`
-      list.innerHTML =
-        // names as slugs: lower case, words joined with _ (thom_bettridge), parentheticals dropped
-        episodes.map((ep) => row(two(ep.ep), ep.guest.replace(/\s*\(.*?\)/g, '').trim().toLowerCase().replace(/\s+/g, '_'), fmt(total(ep)))).join('') +
+      $('ep-list').innerHTML =
+        episodes.map((ep) => row(two(ep.ep), slug(ep.guest), fmt(total(ep)))).join('') +
         row('&nbsp;&nbsp;', 'total_views', fmt(episodes.reduce((s, ep) => s + total(ep), 0)), 'ep-total')
-      slides = episodes.map(() => null)
-      show(0, false)
+      setSlides(episodes.map((ep) => (ep.image ? { src: ep.image, name: slug(ep.guest) } : null)))
     })
-    .catch(() => { list.innerHTML = '<li><span class="ep-guest">source-material.json not found</span></li>' })
+    .catch(() => { $('ep-list').innerHTML = '<li><span class="ep-guest">source-material.json not found</span></li>' })
 }
+
+// ——— 006 zora_profiles: every guest listed, reel covers in the gallery ———
+const zoraPanel = $('zora-panel')
+setupPanel({ panel: zoraPanel, link: document.querySelector('.tree a.zora-link'), close: $('zora-close'), bodyClass: 'zora' })
+{
+  const setSlides = makeGallery({ gallery: $('zora-gallery'), frame: $('zora-frame'), count: $('zora-count'), prev: $('zora-prev'), next: $('zora-next'), panel: zoraPanel })
+  fetch('zora-profiles.json')
+    .then((r) => r.json())
+    .then(({ profiles }) => {
+      $('zora-list').innerHTML = profiles
+        .map((p, i) => `<li><span class="ep-n">${two(i + 1)}</span><span class="ep-guest">${p.name || '—'}</span></li>`)
+        .join('')
+      setSlides(profiles.filter((p) => p.image).map((p) => ({ src: p.image, name: p.name })))
+    })
+    .catch(() => { $('zora-list').innerHTML = '<li><span class="ep-guest">zora-profiles.json not found</span></li>' })
+}
+
 
 // ————— "kian ludwig" coin flip: hover any piece → all flip to the metallic side;
 // the sheen follows the pointer, with a slow drift so it glistens even at rest —————
