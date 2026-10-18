@@ -659,12 +659,33 @@ const THEMES = [
   const OVERLAY_IDS = ['k-lines', 'title-ian', 'title-ludwig', 'asterisks', 'page-pill', 'jp-subtitle', 'exclusive-feed', 'jp-vertical', 'newyork2', 'barcode', 'star', 'custom-bar']
   const fx = $('theme-fx')
   const bgImage = $('bg-image')
+  const tree = document.querySelector('.tree')
   let current = 0
   let busy = false
   const srcFor = (theme, id) => (theme.overlays?.includes(id) ? `media/overlay/${theme.name}/${id}.png` : `media/overlay/${id}.png`)
   const imgOf = (id) => document.querySelector(`#${id} img.front`) || document.getElementById(id)   // coins hold their image inside
   const load = (src) => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = src })
+  const decoded = (im) => (im.decode ? im.decode().catch(() => {}) : Promise.resolve())
 
+  // every theme's images are fetched + decoded in the background after load, so a click starts instantly
+  const assets = new Map()
+  const assetsFor = (theme) => {
+    if (!assets.has(theme.name)) {
+      assets.set(theme.name, (async () => {
+        const [tile, ...list] = await Promise.all([theme.tile ? load(theme.tile) : null, ...OVERLAY_IDS.map((id) => load(srcFor(theme, id)))])
+        await Promise.all([tile, ...list].filter(Boolean).map(decoded))
+        return { tile, imgs: Object.fromEntries(OVERLAY_IDS.map((id, k) => [id, list[k]])) }
+      })())
+    }
+    return assets.get(theme.name)
+  }
+  addEventListener('load', () => setTimeout(() => THEMES.forEach(assetsFor), 1500))
+
+  // the live text (nav) is coloured by style.css per body.theme-<name>
+  const setThemeClass = (theme) => {
+    for (const t of THEMES) document.body.classList.remove(`theme-${t.name}`)
+    document.body.classList.add(`theme-${theme.name}`)
+  }
   function apply(theme) {
     for (const id of OVERLAY_IDS) {
       const img = imgOf(id); const src = srcFor(theme, id)
@@ -672,9 +693,7 @@ const THEMES = [
       // the coins' metallic back is a mask of the front: keep it in sync
       document.querySelector(`#${id} .back`)?.style.setProperty('--face', `url("${src}")`)
     }
-    // body.theme-<name> lets style.css recolour the live text per theme (e.g. the nav)
-    for (const t of THEMES) document.body.classList.remove(`theme-${t.name}`)
-    document.body.classList.add(`theme-${theme.name}`)
+    setThemeClass(theme)
     if (theme.tile) {
       bgImage.style.backgroundImage = `url("${theme.tile}")`
       bgImage.style.backgroundSize = `${theme.tileSize}px`
@@ -685,11 +704,8 @@ const THEMES = [
   }
 
   // the incoming scene: background (tile, or the live video frame) + every overlay at its on-screen box
-  function drawScene(ctx, W, H, dpr, theme, tile, imgs) {
+  function drawScene(ctx, W, H, dpr, theme, tile, pat, imgs) {
     if (tile) {
-      const pat = ctx.createPattern(tile, 'repeat')
-      const s = (theme.tileSize * dpr) / tile.width
-      pat.setTransform(new DOMMatrix().translate(W / 2, H / 2).scale(s))
       ctx.fillStyle = pat; ctx.fillRect(0, 0, W, H)
     } else {
       ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H)
@@ -700,8 +716,7 @@ const THEMES = [
       }
     }
     for (const id of OVERLAY_IDS) {
-      const el = document.getElementById(id)
-      const r = el.getBoundingClientRect()
+      const r = document.getElementById(id).getBoundingClientRect()
       if (r.width && r.height) ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
     }
   }
@@ -711,24 +726,33 @@ const THEMES = [
     busy = true
     const theme = THEMES[i]
     try {
-      const [tile, ...list] = await Promise.all([theme.tile ? load(theme.tile) : null, ...OVERLAY_IDS.map((id) => load(srcFor(theme, id)))])
-      const imgs = Object.fromEntries(OVERLAY_IDS.map((id, k) => [id, list[k]]))
-      const dpr = Math.min(devicePixelRatio || 1, 2)
+      const { tile, imgs } = await assetsFor(theme)
+      const dpr = Math.min(devicePixelRatio || 1, 1.5)
       const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
-      fx.width = W; fx.height = H; fx.classList.add('on')
+      fx.width = W; fx.height = H
       const scene = document.createElement('canvas'); scene.width = W; scene.height = H
       const mask = document.createElement('canvas'); mask.width = W; mask.height = H
       const sctx = scene.getContext('2d'), mctx = mask.getContext('2d'), ctx = fx.getContext('2d')
+      let pat = null
+      if (tile) {
+        pat = sctx.createPattern(tile, 'repeat')
+        pat.setTransform(new DOMMatrix().translate(W / 2, H / 2).scale((theme.tileSize * dpr) / tile.width))
+      }
       // same clock as the sheets' mosaic: a left→right sweep with noise, each cell popping in
       const cols = MOSAIC_COLS, rows = Math.max(1, Math.round(cols * (H / W)))
       const cw = W / cols, ch = H / rows
       const at = new Float32Array(cols * rows)
       for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) at[r * cols + c] = (c / cols) * MOSAIC_SWEEP + Math.random() * MOSAIC_NOISE
+      // the nav sits above the canvas, so its colour flips the moment the sweep reaches it
+      const navAt = (tree.getBoundingClientRect().left / innerWidth) * MOSAIC_SWEEP + MOSAIC_NOISE * 0.5
+      let navDone = false
+      if (tile) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs)   // static scene: draw once
+      fx.classList.add('on')
       await new Promise((done) => {
         const t0 = performance.now()
         const frame = (now) => {
           const t = (now - t0) / 1000
-          drawScene(sctx, W, H, dpr, theme, tile, imgs)
+          if (!tile) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs)   // live video frame: redraw
           mctx.clearRect(0, 0, W, H); mctx.fillStyle = '#000'
           for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
             const k = (t - at[r * cols + c]) / MOSAIC_POP
@@ -740,17 +764,22 @@ const THEMES = [
           ctx.globalCompositeOperation = 'source-over'
           ctx.clearRect(0, 0, W, H); ctx.drawImage(scene, 0, 0)
           ctx.globalCompositeOperation = 'destination-in'; ctx.drawImage(mask, 0, 0)
+          if (!navDone && t >= navAt) { navDone = true; setThemeClass(theme) }
           if (t < MOSAIC_TOTAL) requestAnimationFrame(frame); else done()
         }
         requestAnimationFrame(frame)
       })
       apply(theme)
       current = i
+      // keep the canvas up until the swapped-in overlays have decoded and painted (no blank flash)
+      await Promise.all(OVERLAY_IDS.map((id) => decoded(imgOf(id))))
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
     } catch (e) {
       apply(theme); current = i   // if an image fails to load, just switch without the effect
     } finally {
-      // one more painted frame with the real DOM underneath, then the canvas goes away
-      requestAnimationFrame(() => { fx.classList.remove('on'); fx.getContext('2d').clearRect(0, 0, fx.width, fx.height); busy = false })
+      fx.classList.remove('on')
+      fx.getContext('2d').clearRect(0, 0, fx.width, fx.height)
+      busy = false
     }
   }
 
