@@ -512,6 +512,9 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 }
 .ep-nav:hover { color: #e3001b; }
 
+/* 005: the gallery holds YouTube thumbnails, so the frame is 16:9 */
+#figma-panel .ep-frame { aspect-ratio: 16 / 9; }
+
 /* ——— 006 zora_profiles sheet: its own palette, swapped in through the letterhead variables ——— */
 #zora-panel {
   --lh-blue: #b8b8ff;     /* type + rules: lilac */
