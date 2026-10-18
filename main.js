@@ -769,8 +769,9 @@ const THEMES = [
       ctx.fillStyle = '#fff'
       ctx.font = `${cs.fontWeight} ${parseFloat(cs.fontSize) * dpr}px ${cs.fontFamily}`
       ctx.letterSpacing = `${parseFloat(cs.letterSpacing) * dpr || 0}px`
-      ctx.textBaseline = 'middle'; ctx.textAlign = 'left'
-      ctx.fillText(el.textContent, (r.left + parseFloat(cs.paddingLeft)) * dpr, (r.top + r.height / 2) * dpr)
+      ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'
+      // baseline where style.css puts it: ascenders at the bar's top edge (61.3/78 of the height down)
+      ctx.fillText(el.textContent, (r.left + parseFloat(cs.paddingLeft)) * dpr, (r.top + r.height * 0.786) * dpr)
     }
     // the iPod's shell in the new theme's colour, wherever it currently sits (tucked or raised)
     if (ipodImg) {
