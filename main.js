@@ -297,16 +297,21 @@ function makeGallery({ gallery, frame, count, prev, next, panel, onChange, link 
   const two = (n) => String(n).padStart(2, '0')
   let slides = [null]
   let slide = 0
-  const show = (i, animate = true) => {
-    slide = (i + slides.length) % slides.length
-    onChange?.(slide)
-    const s = slides[slide]
+  const wrap = (i) => (i + slides.length) % slides.length
+  // draw slide i (doesn't change which slide is "current" — hover previews use this)
+  const render = (i, animate) => {
+    const s = slides[i]
     frame.innerHTML = s?.src
-      ? `<img src="${s.src}" alt="${s.name || 'slide ' + two(slide + 1)}">`
-      : `<span class="ep-ph">[ image ${two(slide + 1)} / ${two(slides.length)} ]</span>`
-    count.textContent = (s?.name ? s.name + ' · ' : '') + `${two(slide + 1)} / ${two(slides.length)}`
+      ? `<img src="${s.src}" alt="${s.name || 'slide ' + two(i + 1)}">`
+      : `<span class="ep-ph">[ image ${two(i + 1)} / ${two(slides.length)} ]</span>`
+    count.textContent = (s?.name ? s.name + ' · ' : '') + `${two(i + 1)} / ${two(slides.length)}`
     if (link) { link.hidden = !s?.url; if (s?.url) link.href = s.url }   // LINK ↗ to the slide's page, when it has one
     if (animate) { frame.classList.remove('flip'); void frame.offsetWidth; frame.classList.add('flip') }
+  }
+  const show = (i, animate = true) => {
+    slide = wrap(i)
+    onChange?.(slide)
+    render(slide, animate)
   }
   const step = (d) => (e) => { e.stopPropagation(); show(slide + d) }
   gallery.addEventListener('click', step(1))
@@ -323,7 +328,19 @@ function makeGallery({ gallery, frame, count, prev, next, panel, onChange, link 
     // set the slides: each is { src, name } (src null = placeholder)
     set: (list) => { slides = list.length ? list : [null]; show(0, false) },
     go: (i) => show(i),   // jump straight to slide i (e.g. from a list)
+    peek: (i) => render(wrap(i), false),   // preview slide i without making it current
+    unpeek: () => render(slide, false),    // back to the current one
   }
+}
+
+// a list whose rows carry data-i drives a gallery: hover previews, click selects
+function wireList(list, gallery) {
+  const rowOf = (e) => e.target.closest('li[data-i]')
+  list.addEventListener('click', (e) => { const li = rowOf(e); if (li) { e.stopPropagation(); gallery.go(+li.dataset.i) } })
+  list.addEventListener('pointerover', (e) => { const li = rowOf(e); if (li && e.pointerType !== 'touch') gallery.peek(+li.dataset.i) })
+  list.addEventListener('pointerleave', () => gallery.unpeek())
+  // marks the row for the slide on screen with .cur
+  return (i) => list.querySelectorAll('li[data-i]').forEach((li) => li.classList.toggle('cur', +li.dataset.i === i))
 }
 
 const $ = (id) => document.getElementById(id)
@@ -338,15 +355,10 @@ const figmaPanel = $('figma-panel')
 const smSheet = setupPanel({ panel: figmaPanel, link: document.querySelector('.tree a.figma-link'), close: $('sm-close'), bodyClass: 'figma' })
 {
   const list = $('ep-list')
-  // the list row for the thumbnail on screen is marked .cur
-  const mark = (i) => list.querySelectorAll('li[data-i]').forEach((li) => li.classList.toggle('cur', +li.dataset.i === i))
-  const gallery = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel, onChange: mark, link: $('ep-link') })
+  let mark = () => {}
+  const gallery = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel, onChange: (i) => mark(i), link: $('ep-link') })
+  mark = wireList(list, gallery)   // hover a name → preview; click → select
   gallery.set(Array(8).fill(null))
-  // clicking a name jumps the gallery to that episode's thumbnail
-  list.addEventListener('click', (e) => {
-    const li = e.target.closest('li[data-i]')
-    if (li) { e.stopPropagation(); gallery.go(+li.dataset.i) }
-  })
   fetch('source-material.json')
     .then((r) => r.json())
     .then(({ episodes }) => {
@@ -367,15 +379,18 @@ const jump = (from, to) => (e) => { e.stopPropagation(); from.hide(); to.show() 
 $('sm-next').addEventListener('click', jump(smSheet, zoraSheet))
 $('zora-back').addEventListener('click', jump(zoraSheet, smSheet))
 {
-  const gallery = makeGallery({ gallery: $('zora-gallery'), frame: $('zora-frame'), count: $('zora-count'), prev: $('zora-prev'), next: $('zora-next'), panel: zoraPanel })
-  const setSlides = gallery.set
+  const list = $('zora-list')
+  let mark = () => {}
+  const gallery = makeGallery({ gallery: $('zora-gallery'), frame: $('zora-frame'), count: $('zora-count'), prev: $('zora-prev'), next: $('zora-next'), panel: zoraPanel, onChange: (i) => mark(i) })
+  mark = wireList(list, gallery)   // hover a name → preview; click → select
   fetch('zora-profiles.json')
     .then((r) => r.json())
     .then(({ profiles }) => {
-      $('zora-list').innerHTML = profiles
-        .map((p, i) => `<li><span class="ep-n">${two(i + 1)}</span><span class="ep-guest">${p.name || '—'}</span></li>`)
+      list.innerHTML = profiles
+        .map((p, i) => `<li class="ep-row" data-i="${i}"><span class="ep-n">${two(i + 1)}</span><span class="ep-guest">${p.name || '—'}</span></li>`)
         .join('')
-      setSlides(profiles.filter((p) => p.image).map((p) => ({ src: p.image, name: p.name })))
+      // one slide per profile, same index as the list row (a profile without an image shows the dotted frame)
+      gallery.set(profiles.map((p) => (p.image ? { src: p.image, name: p.name, url: p.reel } : null)))
     })
     .catch(() => { $('zora-list').innerHTML = '<li><span class="ep-guest">zora-profiles.json not found</span></li>' })
 }
