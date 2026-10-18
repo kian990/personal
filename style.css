@@ -111,6 +111,24 @@ body.switching #ipod { z-index: 29; }   /* during a switch the iPod sits under t
 #barcode        { left: 0.1%;  bottom: 4.2%; --w: 5.7; z-index: 3; }
 #star           { right: 1.5%; bottom: 1.6%; --w: 13.1; z-index: 6; }
 #custom-bar     { left: 7.1%;  bottom: 3.3%; --w: 38.2; z-index: 4; }
+/* a second bar right above custom_built: live text, coloured per theme (--cw), drawn into the
+   theme transition by main.js so it pixelates with everything else */
+:root { --cw: #2a00fc; }
+body.theme-gingham-green { --cw: #29bdad; }
+#colorways {
+  left: 7.1%;
+  bottom: calc(3.3% + 3.1 * var(--u));   /* custom bar is 2.58u tall; .5u gap */
+  z-index: 4;
+  width: auto;
+  height: calc(2.58 * var(--u));
+  padding: 0 calc(.45 * var(--u));
+  background: var(--cw);
+  color: #fff;
+  font: 800 calc(2.15 * var(--u)) / calc(2.58 * var(--u)) 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  pointer-events: none;
+}
 
 /* ————— "kian ludwig" as a coin: hover flips it to a metallic back that glistens —————
    the back face is the same artwork used as a mask over a brushed-metal gradient; the
@@ -783,6 +801,7 @@ body.editing .el:active { cursor: grabbing; }
   #barcode        { left: 0.8%; bottom: 8%;  --w: 5.5; }  /* raised clear of the bar */
   #star           { right: 2%;  bottom: 2%;  --w: 15; }
   #custom-bar     { left: 2%;   bottom: 2.8%; --w: 38; }  /* narrower: no star overlap */
+  #colorways      { left: 2%;   bottom: calc(2.8% + 3.1 * var(--u)); }
 
   /* sound chip: bottom-left on mobile, out of the star/bar corner */
   #sound          { left: 10px; right: auto; bottom: 3px; }

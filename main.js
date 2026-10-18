@@ -661,8 +661,9 @@ window.addEventListener('pointermove', (e) => {
 // a theme = a tiled background + a recoloured copy of some overlays (media/overlay/<theme>/).
 // the new scene is drawn on a canvas and digitizes in cell by cell over the old one —————
 const THEMES = [
-  { name: 'video' },   // the original: the video + the original overlay colours
+  { name: 'video', colorways: '#2a00fc' },   // the original: the video + the original overlay colours
   { name: 'gingham-green', tile: 'media/bg/gingham-green.webp', tileSize: 440, backFirst: true,   // backFirst: the coin rests on its back (diamond)
+    colorways: '#29bdad',          // the [colorways__*] bar's background (keep in sync with --cw in style.css)
     ipod: 'media/ipod-teal.png',   // the iPod's shell in the theme's cyan
     overlays: ['title-ian', 'title-ludwig', 'custom-bar', 'k-lines', 'asterisks', 'jp-subtitle', 'jp-vertical'] },
 ]
@@ -758,6 +759,18 @@ const THEMES = [
       if (!r.width || !r.height) continue
       if (theme.backFirst && gem && COIN_IDS.includes(id)) drawCoinBack(ctx, imgs[id], r, dpr, gem)
       else ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+    }
+    // the [colorways__*] bar: live text, redrawn here in the new theme's colour with the same font + box
+    {
+      const el = $('colorways')
+      const r = el.getBoundingClientRect(), cs = getComputedStyle(el)
+      ctx.fillStyle = theme.colorways || '#2a00fc'
+      ctx.fillRect(r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
+      ctx.fillStyle = '#fff'
+      ctx.font = `${cs.fontWeight} ${parseFloat(cs.fontSize) * dpr}px ${cs.fontFamily}`
+      ctx.letterSpacing = `${parseFloat(cs.letterSpacing) * dpr || 0}px`
+      ctx.textBaseline = 'middle'; ctx.textAlign = 'left'
+      ctx.fillText(el.textContent, (r.left + parseFloat(cs.paddingLeft)) * dpr, (r.top + r.height / 2) * dpr)
     }
     // the iPod's shell in the new theme's colour, wherever it currently sits (tucked or raised)
     if (ipodImg) {
