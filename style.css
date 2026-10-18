@@ -520,6 +520,19 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 /* 005: the gallery holds YouTube thumbnails, so the frame is 16:9 */
 #figma-panel .ep-frame { aspect-ratio: 16 / 9; }
 #figma-panel .ep-gallery { justify-content: center; }   /* thumbnail + counter sit in the middle of the column */
+/* under the thumbnail: < name · 01 / 08 > on the left, LINK ↗ to the video on the right */
+.ep-caption-split { justify-content: space-between; align-items: baseline; }
+.ep-pager { display: inline-flex; gap: 1.2em; align-items: baseline; }
+.ep-link {
+  color: var(--lh-blue);
+  text-decoration: none;
+  display: inline-flex;
+  gap: .3em;
+  align-items: baseline;
+}
+.ep-link i { font-style: normal; display: inline-block; transition: transform .15s ease; }
+.ep-link:hover { color: #ffb3f0; }
+.ep-link:hover i { transform: translate(.15em, -.15em); }   /* the arrow shoots up and out */
 
 /* ——— 006 zora_profiles sheet: its own palette, swapped in through the letterhead variables ——— */
 #zora-panel {

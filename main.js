@@ -293,7 +293,7 @@ function setupPanel({ panel, link, close, bodyClass }) {
 
 // a click-through gallery inside a sheet: click the frame (or < >, or the arrow keys
 // while the panel is open) to advance. slides are image paths; null = dotted placeholder
-function makeGallery({ gallery, frame, count, prev, next, panel, onChange }) {
+function makeGallery({ gallery, frame, count, prev, next, panel, onChange, link }) {
   const two = (n) => String(n).padStart(2, '0')
   let slides = [null]
   let slide = 0
@@ -305,10 +305,12 @@ function makeGallery({ gallery, frame, count, prev, next, panel, onChange }) {
       ? `<img src="${s.src}" alt="${s.name || 'slide ' + two(slide + 1)}">`
       : `<span class="ep-ph">[ image ${two(slide + 1)} / ${two(slides.length)} ]</span>`
     count.textContent = (s?.name ? s.name + ' · ' : '') + `${two(slide + 1)} / ${two(slides.length)}`
+    if (link) { link.hidden = !s?.url; if (s?.url) link.href = s.url }   // LINK ↗ to the slide's page, when it has one
     if (animate) { frame.classList.remove('flip'); void frame.offsetWidth; frame.classList.add('flip') }
   }
   const step = (d) => (e) => { e.stopPropagation(); show(slide + d) }
   gallery.addEventListener('click', step(1))
+  link?.addEventListener('click', (e) => e.stopPropagation())   // the link opens; it doesn't also advance
   prev.addEventListener('click', step(-1))
   next.addEventListener('click', step(1))
   document.addEventListener('keydown', (e) => {
@@ -338,7 +340,7 @@ const smSheet = setupPanel({ panel: figmaPanel, link: document.querySelector('.t
   const list = $('ep-list')
   // the list row for the thumbnail on screen is marked .cur
   const mark = (i) => list.querySelectorAll('li[data-i]').forEach((li) => li.classList.toggle('cur', +li.dataset.i === i))
-  const gallery = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel, onChange: mark })
+  const gallery = makeGallery({ gallery: $('ep-gallery'), frame: $('ep-frame'), count: $('ep-count'), prev: $('ep-prev'), next: $('ep-next'), panel: figmaPanel, onChange: mark, link: $('ep-link') })
   gallery.set(Array(8).fill(null))
   // clicking a name jumps the gallery to that episode's thumbnail
   list.addEventListener('click', (e) => {
@@ -352,7 +354,7 @@ const smSheet = setupPanel({ panel: figmaPanel, link: document.querySelector('.t
       list.innerHTML =
         episodes.map((ep, i) => row(two(ep.ep), slug(ep.guest), fmt(total(ep)), 'ep-row', i)).join('') +
         row('&nbsp;&nbsp;', 'total_views', fmt(episodes.reduce((s, ep) => s + total(ep), 0)), 'ep-total')
-      gallery.set(episodes.map((ep) => (ep.image ? { src: ep.image, name: slug(ep.guest) } : null)))
+      gallery.set(episodes.map((ep) => (ep.image ? { src: ep.image, name: slug(ep.guest), url: ep.youtube?.url } : null)))
     })
     .catch(() => { $('ep-list').innerHTML = '<li><span class="ep-guest">source-material.json not found</span></li>' })
 }
