@@ -832,9 +832,12 @@ const THEMES = [
     }
   }
 
-  $('custom-bar').addEventListener('click', (e) => {
+  // clicking custom_built_backgrounds.pol or the WEBSITE_COLORWAYS nav item steps to the next theme
+  const nextTheme = (e) => {
     if (editing) return
     e.preventDefault(); e.stopPropagation()
     switchTheme((current + 1) % THEMES.length)
-  })
+  }
+  $('custom-bar').addEventListener('click', nextTheme)
+  document.querySelector('.tree a.colorways-link')?.addEventListener('click', nextTheme)
 }
