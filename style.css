@@ -577,7 +577,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
   right: 1.2%;
   bottom: 0;
   z-index: 60;                 /* over the stage + star, under the 005/006 sheets */
-  width: clamp(170px, 15vw, 240px);
+  width: clamp(220px, 21vw, 340px);
   container-type: inline-size;
   transform: translateY(104%);
   transition: transform .65s cubic-bezier(.22, 1, .36, 1);
