@@ -444,6 +444,7 @@ body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
 .ep-list .ep-views { font-variant-numeric: tabular-nums; color: #ffb852; }
 .ep-list .ep-total { margin-top: .9em; padding-top: .5em; border-top: 1px solid var(--lh-lilac); }
 .ep-list .ep-total .ep-guest::after { content: none; }
+.ep-list .ep-total .ep-views { color: #7e3075; }
 /* right column: placeholder image frame, click to advance */
 .ep-gallery {
   margin: 0;
