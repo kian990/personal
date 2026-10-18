@@ -1,0 +1,186 @@
+{
+  "_note": "the iPod's playlist. one entry per snippet, in order. src = audio file (mp3/m4a) under media/music/. start/end = seconds to play from the file (leave them out to play the whole file). art = optional square cover image. entries without a src still show on the iPod but can't play.",
+  "name": "sounds",
+  "tracks": [
+    {
+      "title": "It's Cold Out (Extended Mix)",
+      "artist": "Jawnino",
+      "album": "40",
+      "art": "media/music/art/01.jpg",
+      "src": "media/music/01.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/its-cold-out-extended-mix/1831481882?i=1831481888&uo=4"
+    },
+    {
+      "title": "Agua de Beber",
+      "artist": "Astrud Gilberto",
+      "album": "Verve Jazz Masters, Vol. 9: Astrud Gilberto",
+      "art": "media/music/art/02.jpg",
+      "src": "media/music/02.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/%C3%A1gua-de-beber/1434874753?i=1434875065&uo=4"
+    },
+    {
+      "title": "Disparate Youth",
+      "artist": "Santigold",
+      "album": "Master of My Make-Believe (Deluxe Version)",
+      "art": "media/music/art/03.jpg",
+      "src": "media/music/03.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/disparate-youth/513473335?i=513473337&uo=4"
+    },
+    {
+      "title": "SUNSHOWER: NOURISHED BY TIME VERSION",
+      "artist": "Turnstile",
+      "album": "",
+      "art": "",
+      "src": "",
+      "start": 0,
+      "end": 30
+    },
+    {
+      "title": "I Gotcha",
+      "artist": "Lupe Fiasco",
+      "album": "Lupe Fiasco's Food & Liquor",
+      "art": "media/music/art/05.jpg",
+      "src": "media/music/05.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/i-gotcha-feat-pharrell/189225660?i=189225902&uo=4"
+    },
+    {
+      "title": "4:30 AM",
+      "artist": "Atmosphere",
+      "album": "Overcast! (20 Year Anniversary Remaster Instrumental Version)",
+      "art": "media/music/art/06.jpg",
+      "src": "media/music/06.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/4-30-am-instrumental/1815995521?i=1815995679&uo=4"
+    },
+    {
+      "title": "Sounds is Vibrations",
+      "artist": "Capital STEEZ",
+      "album": "",
+      "art": "",
+      "src": "",
+      "start": 0,
+      "end": 30
+    },
+    {
+      "title": "4 The People",
+      "artist": "Ethereal & Playboi Carti",
+      "album": "4 The People (feat. Playboi Carti) - Single",
+      "art": "media/music/art/08.jpg",
+      "src": "media/music/08.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/4-the-people-feat-playboi-carti/1627234134?i=1627234397&uo=4"
+    },
+    {
+      "title": "Money never changed us",
+      "artist": "blimeydog",
+      "album": "",
+      "art": "",
+      "src": "",
+      "start": 0,
+      "end": 30
+    },
+    {
+      "title": "Heal Yourself and Move",
+      "artist": "Theo Parrish",
+      "album": "First Floor",
+      "art": "media/music/art/10.jpg",
+      "src": "media/music/10.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/heal-yourself-and-move/271799998?i=271801294&uo=4"
+    },
+    {
+      "title": "Encyclopedia",
+      "artist": "Operelly",
+      "album": "Encyclopedia - Single",
+      "art": "media/music/art/11.jpg",
+      "src": "media/music/11.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/encyclopedia/1618614953?i=1618614954&uo=4"
+    },
+    {
+      "title": "Tour de France",
+      "artist": "Earl Sweatshirt",
+      "album": "",
+      "art": "",
+      "src": "",
+      "start": 0,
+      "end": 30
+    },
+    {
+      "title": "Da Art of Storytellin'",
+      "artist": "OutKast",
+      "album": "Aquemini",
+      "art": "media/music/art/13.jpg",
+      "src": "media/music/13.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/da-art-of-storytellin-pt-1/1536669507?i=1536670028&uo=4"
+    },
+    {
+      "title": "Fingerbib",
+      "artist": "Aphex Twin",
+      "album": "Richard D. James Album",
+      "art": "media/music/art/14.jpg",
+      "src": "media/music/14.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/fingerbib/281111401?i=281111437&uo=4"
+    },
+    {
+      "title": "Tom's Diner",
+      "artist": "Suzanne Vega",
+      "album": "Tom's Album",
+      "art": "media/music/art/15.jpg",
+      "src": "media/music/15.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/toms-diner-7-a/1443836067?i=1443836345&uo=4"
+    },
+    {
+      "title": "Waltz for Koop",
+      "artist": "Koop",
+      "album": "Waltz for Koop",
+      "art": "media/music/art/16.jpg",
+      "src": "media/music/16.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/waltz-for-koop/285952445?i=285952461&uo=4"
+    },
+    {
+      "title": "200HP",
+      "artist": "Brotherkupa",
+      "album": "",
+      "art": "",
+      "src": "",
+      "start": 0,
+      "end": 30
+    },
+    {
+      "title": "Victime de la mode",
+      "artist": "MC Solaar",
+      "album": "Le tour de la question (live)",
+      "art": "media/music/art/18.jpg",
+      "src": "media/music/18.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/victime-de-la-mode/142884704?i=142884858&uo=4"
+    },
+    {
+      "title": "Hip-Hop",
+      "artist": "Dead Prez",
+      "album": "It's Bigger Than Hip-Hop - EP",
+      "art": "media/music/art/19.jpg",
+      "src": "media/music/19.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/hip-hop-radio-version/1610824632?i=1610824637&uo=4"
+    },
+    {
+      "title": "Untitled #6",
+      "artist": "Girlfriends",
+      "album": "Girlfriends",
+      "art": "media/music/art/20.jpg",
+      "src": "media/music/20.m4a",
+      "start": 0,
+      "apple": "https://music.apple.com/us/album/untitled-6/1842803162?i=1842803169&uo=4"
+    }
+  ]
+}

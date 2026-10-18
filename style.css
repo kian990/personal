@@ -56,6 +56,70 @@ body {
 #star           { right: 1.5%; bottom: 1.6%; --w: 13.1; z-index: 6; }
 #custom-bar     { left: 7.1%;  bottom: 3.3%; --w: 38.2; z-index: 4; }
 
+/* ————— "kian ludwig" as a coin: hover flips it to a metallic back that glistens —————
+   the back face is the same artwork used as a mask over a brushed-metal gradient; the
+   sheen position (--sx/--sy) is driven by the pointer in main.js */
+.coin {
+  transform: perspective(900px) rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform .95s cubic-bezier(.3, .75, .2, 1);
+  will-change: transform;
+  cursor: pointer;
+  --sx: 50%;
+  --sy: 50%;
+  --ang: 115deg;
+}
+.coin.flipped { transform: perspective(900px) rotateY(180deg); }
+.coin .face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.coin .front {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-user-drag: none;
+}
+.coin .back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  --rim: calc(.12 * var(--u));   /* bevel depth, scales with the composition */
+  /* a soft drop shadow lifts the badge off the page */
+  filter: drop-shadow(0 calc(.25 * var(--u)) calc(.5 * var(--u)) rgba(20, 20, 60, .25));
+}
+/* every layer of the back is the artwork's silhouette: the mask does the shaping */
+.coin .back::before, .coin .back::after, .coin .back .metal {
+  content: '';
+  position: absolute;
+  inset: 0;
+  -webkit-mask: var(--face) center / 100% 100% no-repeat;
+          mask: var(--face) center / 100% 100% no-repeat;
+}
+/* emboss: a light rim peeking out top-left, a dark rim bottom-right */
+.coin .back::before { background: #fbfbfd; transform: translate(calc(-1 * var(--rim)), calc(-1 * var(--rim))); }
+.coin .back::after  { background: #5e5e70; transform: translate(var(--rim), var(--rim)); }
+.coin .back .metal {
+  z-index: 1;
+  background:
+    /* fine film grain */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .5 0'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>"),
+    /* holographic tint: mauve → white → blue → slate → pink — broad, saturated bands;
+       the white stops keep the highlights pure silver */
+    linear-gradient(var(--ang),
+      #c893b8 0%, #ffffff 14%, #9cbfe6 30%, #7c7f94 44%,
+      #f0c6d8 58%, #ffffff 70%, #a6b4e0 84%, #c893b8 100%),
+    /* brushed silver with real depth: deep slate to pure white */
+    linear-gradient(var(--ang),
+      #666672 0%, #f8f8fb 14%, #8a8a97 28%, #ffffff 44%,
+      #6d6d79 58%, #eeeef3 72%, #7e7e8a 86%, #f4f4f7 100%);
+  background-size: 160px 160px, 420% 420%, 420% 420%;
+  background-position: 0 0, var(--sx) var(--sy), var(--sx) var(--sy);
+  background-blend-mode: soft-light, multiply, normal;
+}
+/* no flipping while laying things out */
+body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }
+
 /* ————— nav tree (right side, above everything) ————— */
 .tree {
   position: fixed;
@@ -64,12 +128,13 @@ body {
   left: calc(65.5 * var(--u));
   top: 26%;
   z-index: 40;
-  font-family: 'Neue Haas Grotesk Display Pro', 'Neue Haas Grotesk Text Pro',
-               'Neue Haas Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Courier Prime', 'Courier New', Courier, monospace;
   /* sized in design units (--u) like every other element, so it scales with
      the whole composition when the window changes — same place, no overlap */
   font-size: calc(1.55 * var(--u));
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: -.07em;   /* ~35% tighter than Courier Prime's natural gap */
+  text-transform: uppercase;   /* trying all-caps — delete this line to go back */
   line-height: 1.35;   /* tight: the wrap hugs the text */
 }
 .tree ul { list-style: none; }
@@ -111,6 +176,21 @@ body {
   text-shadow: 0 0 .19em rgba(26, 16, 216, .45);
 }
 
+/* ——— 005 source_material: custom hover colours (number + slash untouched) ——— */
+.tree .figma-link .fg,
+.tree .lc { text-transform: lowercase; }   /* FIGMA / zora stay lowercase in the all-caps nav */
+.tree .done a.figma-link:hover {
+  background: rgba(166, 230, 219, .65);   /* #a6e6db, translucent like the white wraps */
+}
+.tree .done a.figma-link:hover .sm {
+  color: transparent;
+  text-shadow: 0 0 .19em rgba(255, 179, 240, .95);   /* #ffb3f0 blurred */
+}
+.tree .done a.figma-link:hover .fg {
+  color: transparent;
+  text-shadow: 0 0 .19em rgba(41, 189, 173, .95);    /* #29bdad blurred */
+}
+
 /* ——— work-in-progress sections: blurred at rest… ——— */
 .tree .wip .cat,
 .tree .wip a {
@@ -142,8 +222,8 @@ body {
 /* ————— sound toggle ————— */
 #sound {
   position: fixed;
-  right: 16px;
-  bottom: 14px;
+  left: 16px;
+  bottom: 12px;
   z-index: 50;
   font: inherit;
   font-size: 11px;
@@ -204,6 +284,410 @@ body.whoami :is(#bg, .stage, .tree, #sound) { filter: blur(5px); }
 }
 @keyframes caret { 50% { opacity: 0; } }
 
+/* ————— 005 source_material panel: overlays fade out, a big translucent white
+   box fades in over the still-playing video (room on every side) ————— */
+.stage, .tree, #sound { transition: opacity .6s ease, filter .45s ease; }
+body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
+.sheet-panel {
+  position: fixed;
+  inset: 0;                            /* full bleed: a new page over the video */
+  z-index: 100;
+  pointer-events: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+.sheet-panel.open { pointer-events: auto; }
+/* once the mosaic has filled in, the box becomes one clean solid wrap */
+.sheet-panel.solid { background: rgba(255, 255, 255, .9); }   /* white page once the mosaic has filled in — 90%, so the video ghosts through */
+/* the mosaic canvas (drawn by main.js) fills the box under the letterhead */
+.sheet-panel .mosaic {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+:root {
+  --lh-blue: #0057ba;     /* type + rules */
+  --lh-lilac: #b8b8ff;    /* halftone dot field */
+  --lh-slate: #5c7287;    /* labels */
+  --dashes: '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------';
+}
+/* ————— the sheet inside the 005 panel: letterhead, stats strip, two columns ————— */
+.sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 2;                /* above the mosaic canvas */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;          /* everything is sized to fit the box — no scrolling */
+  padding: 2.6em 6% 2.4em;
+  font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+  /* scales with the window height first, so the sheet always fits the box */
+  font-size: clamp(8px, min(.95vw, 1.55vh), 15px);
+  letter-spacing: -.07em;   /* same tightening as the nav tree */
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--lh-blue);
+  /* revealed in lockstep with the mosaic: a stepped left→right wipe that runs on the
+     same clock as the cell sweep, so the type digitizes in with the box */
+  clip-path: inset(0 100% 0 0);
+}
+.sheet-panel.open .sheet {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path .9s steps(48, end);
+}
+.sheet-panel.closing .sheet {
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path .9s steps(48, end);
+}
+.sheet b { font-weight: 400; color: var(--lh-slate); margin-right: .9em; }
+.sm-close {
+  position: absolute;
+  top: 1.2em;
+  right: 1.4em;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--lh-slate);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: .3em .4em;
+}
+.sm-close:hover { color: #e3001b; }
+/* [>] / [<] beside the [x]: jumps straight to the other sheet */
+.sm-jump {
+  position: absolute;
+  top: 1.2em;
+  right: 3.9em;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--lh-slate);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: .3em .4em;
+}
+.sm-jump:hover { color: #ffb3f0; }   /* pastel pink on both sheets; [x] stays red */
+
+/* ——— letterhead header (Virgil Abloh Archive style) ——— */
+.lh-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 1em;
+  padding: .65em 0;
+  white-space: nowrap;
+}
+.lh-row span { overflow: hidden; text-overflow: ellipsis; }
+/* the rules are typed dashes, not drawn lines: a long run of "-" clipped to the width */
+.lh-top::after, .lh-bottom::after {
+  content: var(--dashes);
+  display: block;
+  grid-column: 1 / -1;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-top: .15em;
+  letter-spacing: 0;
+  color: var(--lh-blue);
+}
+.lh-subject { grid-column: 1 / 3; }
+.lh-right { text-align: right; }
+.lh-row { padding-bottom: 0; }
+/* middle band: logo left, lilac halftone field right */
+.lh-mid {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4%;
+  padding: .9em 0 .5em;    /* no rule below, so the logo sits lower and bigger */
+  min-height: 6.5em;
+}
+.lh-logo {
+  display: block;
+  width: 30%;
+  max-width: 560px;
+  height: auto;
+}
+.lh-dots {
+  align-self: stretch;
+  width: 46%;
+  background-image: radial-gradient(circle, var(--lh-lilac) 1px, transparent 1.3px);
+  background-size: 6px 6px;
+  /* feathered edges so the field dissolves into the page like the print halftone */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* ——— sheet body: two columns under the letterhead ——— */
+.sm-body {
+  flex: 1;
+  min-height: 0;             /* lets the body shrink to the sheet instead of overflowing */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 6%;
+  padding-top: 1.4em;
+}
+.sm-col { min-width: 0; min-height: 0; display: flex; }
+/* left column: the episode list sits small, in the middle of the column */
+.sm-left { align-items: center; justify-content: center; }
+.ep-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 1.1em;
+  line-height: 1.75;
+  letter-spacing: -.05em;
+  white-space: nowrap;
+}
+.ep-list li { display: flex; gap: 1.2em; align-items: baseline; }
+.ep-list .ep-n { color: var(--lh-slate); }
+.ep-list .ep-guest { flex: 1; overflow: hidden; text-overflow: ellipsis; text-transform: lowercase; }
+.ep-list .ep-guest::after {
+  content: var(--dashes);
+  display: inline-block;
+  width: 1.6em;
+  overflow: hidden;
+  vertical-align: baseline;
+  margin: 0 .4em;
+  letter-spacing: 0;
+  color: var(--lh-lilac);
+}
+.ep-list .ep-views { font-variant-numeric: tabular-nums; color: #ffb852; }
+.ep-list .ep-total { margin-top: .9em; padding-top: .5em; border-top: 1px solid var(--lh-lilac); }
+.ep-list .ep-total .ep-guest::after { content: none; }
+/* 005 rows are clickable: hover → pastel pink name; the episode on screen → teal */
+.ep-list .ep-row { cursor: pointer; }
+.ep-list .ep-row .ep-guest, .ep-list .ep-row .ep-n { transition: color .15s ease; }
+.ep-list .ep-row:hover :is(.ep-guest, .ep-n) { color: #ffb3f0; }
+.ep-list .ep-row.cur :is(.ep-guest, .ep-n) { color: #29bdad; }
+.ep-list .ep-total .ep-views { color: #7e3075; }
+/* right column: placeholder image frame, click to advance */
+.ep-gallery {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .6em;
+  cursor: pointer;
+  user-select: none;
+}
+.ep-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: calc(100% - 2.2em);
+  border: 1px solid var(--lh-blue);
+  overflow: hidden;
+  /* placeholder: the lilac halftone field with a label in the corner */
+  background-image: radial-gradient(circle, var(--lh-lilac) 1px, transparent 1.3px);
+  background-size: 6px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ep-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ep-frame .ep-ph {
+  background: #fff;
+  padding: .4em .7em;
+  color: var(--lh-slate);
+}
+/* each click flashes the frame in like the mosaic: a quick stepped wipe */
+.ep-frame.flip { animation: ep-flip .28s steps(6, end); }
+@keyframes ep-flip { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.ep-caption {
+  display: flex;
+  justify-content: center;
+  gap: 1.2em;
+  color: var(--lh-slate);
+  font-variant-numeric: tabular-nums;
+}
+.ep-nav {
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--lh-blue);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0 .4em;
+}
+.ep-nav:hover { color: #e3001b; }
+
+/* 005: the gallery holds YouTube thumbnails, so the frame is 16:9 */
+#figma-panel .ep-frame { aspect-ratio: 16 / 9; }
+#figma-panel .ep-gallery { justify-content: center; }   /* thumbnail + counter sit in the middle of the column */
+/* under the thumbnail: < name · 01 / 08 > on the left, LINK ↗ to the video on the right */
+.ep-caption-split { justify-content: space-between; align-items: baseline; }
+.ep-pager { display: inline-flex; gap: 1.2em; align-items: baseline; }
+.ep-link {
+  color: var(--lh-blue);
+  text-decoration: none;
+  display: inline-flex;
+  gap: .3em;
+  align-items: baseline;
+}
+.ep-link i { font-style: normal; display: inline-block; transition: transform .15s ease; }
+.ep-link:hover { color: #ffb3f0; }
+.ep-link:hover i { transform: translate(.15em, -.15em); }   /* the arrow shoots up and out */
+
+/* ——— 006 zora_profiles sheet: its own palette, swapped in through the letterhead variables ——— */
+#zora-panel {
+  --lh-blue: #b8b8ff;     /* type + rules: lilac */
+  --lh-lilac: #d1b0b3;    /* dot field, dashes, list rule: dusty pink */
+  --lh-slate: #5c7287;    /* labels + numbers: slate */
+  --zora-green: #94ff94;  /* hover + highlight */
+}
+#zora-panel .lh-logo { width: 26%; mix-blend-mode: multiply; }   /* any white left in the logo file vanishes into the sheet */
+#zora-panel .ep-nav:hover { color: var(--zora-green); }
+#zora-panel .ep-frame { border-color: var(--lh-blue); }
+#zora-panel .ep-caption { color: var(--lh-blue); }
+/* the counter sits on a green block, like the nav highlights */
+#zora-panel #zora-count { background: var(--zora-green); color: #000; padding: 0 .5em; }
+.sm-stack { display: flex; flex-direction: column; gap: 1.6em; width: 100%; max-width: 46em; }
+.sm-blurb {
+  margin: 0;
+  font-size: .95em;
+  line-height: 1.5;
+  color: var(--lh-slate);
+}
+/* every guest, flowed into two columns so 45+ names fit the sheet */
+.name-list {
+  font-size: 1.15em;
+  line-height: 1.4;
+  columns: 2;
+  column-gap: 2em;
+}
+.name-list li { gap: .8em; }
+.name-list li { break-inside: avoid; }
+.name-list .ep-guest { text-transform: none; }   /* $handles as written on the covers */
+.name-list .ep-guest::after { content: none; }
+/* reel covers are vertical: the frame is 9:16, sized by the column's height */
+.ep-gallery { height: 100%; }
+.zora-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: auto;
+  max-height: none;
+  aspect-ratio: 9 / 16;
+  align-self: center;
+}
+
+/* ————— film grain: a fixed static layer over everything (video, nav, white sheets).
+   --grain is the strength; the blend keeps it as texture rather than a grey wash ————— */
+:root { --grain: .14; }
+#grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: var(--grain);
+  mix-blend-mode: overlay;
+  image-rendering: pixelated;   /* grain is drawn at half resolution: chunkier, cheaper */
+}
+@media (prefers-reduced-motion: reduce) { #grain { opacity: calc(var(--grain) * .5); } }
+
+/* ————— iPod: tucked below the bottom-right corner; hovering the star slides it up
+   (GTA phone style). everything inside is sized in cqw = % of the iPod's width ————— */
+#ipod {
+  position: fixed;
+  right: 1.2%;
+  bottom: 0;
+  z-index: 60;                 /* over the stage + star, under the 005/006 sheets */
+  width: clamp(220px, 21vw, 340px);
+  container-type: inline-size;
+  transform: translateY(91%);           /* at rest the top edge just peeks over the bottom of the screen */
+  transition: transform .65s cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .5));
+  user-select: none;
+}
+#ipod.up { transform: translateY(5%); }   /* bottom edge stays just off-screen, like a phone pulled from a pocket */
+.ipod-body { display: block; width: 100%; height: auto; border-radius: 7% / 4.3%; }
+
+/* the LCD: covers the photographed screen and redraws the classic Now Playing view */
+.ipod-screen {
+  position: absolute;
+  left: 10.3%; top: 5.1%;
+  width: 79.5%; height: 36.6%;
+  background: #fff;
+  color: #000;
+  font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 4.1cqw;
+  line-height: 1.25;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25);
+}
+.ipod-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: .25em .7em;
+  background: linear-gradient(#dfe6f2, #b9c7dd);
+  border-bottom: 1px solid #8a9bb8;
+  color: #30456a;
+  font-weight: 700;
+}
+.ipod-state { color: #2a7be4; font-size: .9em; }
+.ipod-bar-title { flex: 1; text-align: center; }
+.ipod-batt { width: 2.2em; height: 1em; border: 1px solid #5e6b80; border-radius: .18em; padding: .1em; }
+.ipod-batt i { display: block; width: 100%; height: 100%; background: #3cc24a; }
+
+.ipod-now { flex: 1; display: flex; flex-direction: column; padding: .45em .9em .4em; gap: .35em; }
+.ipod-count { color: #30456a; font-weight: 700; }
+.ipod-meta { flex: 1; display: flex; gap: .9em; min-height: 0; }
+.ipod-art {
+  flex: 0 0 auto;
+  width: 33%;
+  aspect-ratio: 1;
+  background: #ccd3dd center / cover no-repeat;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.ipod-lines { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: .35em; }
+.ipod-lines > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ipod-song { font-weight: 700; }
+.ipod-prog { height: .6em; border: 1px solid #8a9bb8; background: linear-gradient(#f4f6fa, #d6dde8); }
+.ipod-prog i { display: block; height: 100%; width: 0; background: linear-gradient(#5ea2f5, #1f6fe0); }
+.ipod-times { display: flex; justify-content: space-between; font-weight: 700; color: #30456a; }
+
+/* MENU view: the playlist, iPod-menu style, the chosen row highlighted */
+.ipod-list { display: none; flex: 1; margin: 0; padding: 0; list-style: none; overflow: hidden; }
+#ipod.menu .ipod-now { display: none; }
+#ipod.menu .ipod-list { display: block; }
+.ipod-list li {
+  display: flex;
+  padding: .2em .7em;
+  gap: .6em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ipod-list li span:first-child { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.ipod-list li.on { background: linear-gradient(#5ea2f5, #1f6fe0); color: #fff; }
+.ipod-list li.playing::after { content: '\25B6'; font-size: .8em; }
+
+/* click-wheel hit zones: a circle over the photographed wheel, split into 5 buttons */
+.ipod-wheel {
+  position: absolute;
+  left: 17.6%; top: 50.8%;
+  width: 63.4%; aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.ipod-wheel button { position: absolute; background: none; border: 0; padding: 0; cursor: pointer; }
+.ipod-wheel button:active { background: rgba(255, 255, 255, .12); }
+.w-menu   { left: 25%; top: 0;    width: 50%; height: 27%; }
+.w-play   { left: 25%; bottom: 0; width: 50%; height: 27%; }
+.w-prev   { left: 0;   top: 25%;  width: 27%; height: 50%; }
+.w-next   { right: 0;  top: 25%;  width: 27%; height: 50%; }
+.w-select { left: 34.5%; top: 34.5%; width: 31%; height: 31%; border-radius: 50%; }
+
 /* ————— edit mode ————— */
 body.editing .el { outline: 1px dashed rgba(255, 0, 128, .8); cursor: grab; }
 body.editing .el:active { cursor: grabbing; }
@@ -245,6 +729,19 @@ body.editing .el:active { cursor: grabbing; }
 
   /* sound chip: bottom-left on mobile, out of the star/bar corner */
   #sound          { left: 10px; right: auto; bottom: 3px; }
+
+  /* 005 sheet: letterhead in two columns, wider type */
+  .sheet { padding: 4em 5% 3em; font-size: 10.5px; overflow-y: auto; }
+  .lh-row { grid-template-columns: 1fr 1fr; }
+  .lh-subject { grid-column: 1 / 3; }
+  .lh-logo { width: 60%; }
+  .lh-dots { display: none; }
+  .sm-body { grid-template-columns: 1fr; gap: 2em 0; padding-top: 2em; }
+  .sm-left { justify-content: flex-start; }
+  .ep-list { font-size: 1.15em; }
+  .name-list { font-size: 1.05em; }
+  #zora-panel .lh-logo { width: 50%; }
+  .zora-frame { flex: 0 0 auto; width: 70%; align-self: flex-start; }
 
   /* nav tree: its own clear band under the title cluster */
   .tree {

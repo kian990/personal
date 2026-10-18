@@ -1,0 +1,145 @@
+{
+  "show": {
+    "title": "Source Material",
+    "season": 1,
+    "by": "Figma",
+    "asOf": "2026-10-17",
+    "channels": [
+      "YouTube",
+      "Instagram",
+      "X"
+    ]
+  },
+  "stats": {
+    "episodes": 8,
+    "runtime": "72:29",
+    "youtubeViews": 1272264,
+    "xViews": 76931578,
+    "combinedViews": 78203842,
+    "youtubeLikes": 14940,
+    "xLikes": 15529,
+    "xReposts": 1018
+  },
+  "episodes": [
+    {
+      "ep": 1,
+      "guest": "Thom Bettridge",
+      "runtime": "7:17",
+      "published": "2026-08-24",
+      "youtube": {
+        "id": "B8Q89_yoJAY",
+        "views": 309330,
+        "url": "https://www.youtube.com/watch?v=B8Q89_yoJAY"
+      },
+      "x": {
+        "views": 8307974
+      },
+      "image": "media/sm/ep01.jpg"
+    },
+    {
+      "ep": 2,
+      "guest": "Marisa Chentakul",
+      "runtime": "7:34",
+      "published": "2026-08-31",
+      "youtube": {
+        "id": "V19x5yo-Sa8",
+        "views": 150308,
+        "url": "https://www.youtube.com/watch?v=V19x5yo-Sa8"
+      },
+      "x": {
+        "views": 12725464
+      },
+      "image": "media/sm/ep02.jpg"
+    },
+    {
+      "ep": 3,
+      "guest": "Zach Lieberman",
+      "runtime": "10:24",
+      "published": "2026-09-07",
+      "youtube": {
+        "id": "-BomvzRo6N4",
+        "views": 197768,
+        "url": "https://www.youtube.com/watch?v=-BomvzRo6N4"
+      },
+      "x": {
+        "views": 12144092
+      },
+      "image": "media/sm/ep03.jpg"
+    },
+    {
+      "ep": 4,
+      "guest": "Aitana Picó",
+      "runtime": "8:27",
+      "published": "2026-09-14",
+      "youtube": {
+        "id": "BcomY53jqpo",
+        "views": 148127,
+        "url": "https://www.youtube.com/watch?v=BcomY53jqpo"
+      },
+      "x": {
+        "views": 5972439
+      },
+      "image": "media/sm/ep04.jpg"
+    },
+    {
+      "ep": 5,
+      "guest": "Brent David Freaney",
+      "runtime": "10:18",
+      "published": "2026-09-21",
+      "youtube": {
+        "id": "Upx_82SYDGc",
+        "views": 182381,
+        "url": "https://www.youtube.com/watch?v=Upx_82SYDGc"
+      },
+      "x": {
+        "views": 15563526
+      },
+      "image": "media/sm/ep05.jpg"
+    },
+    {
+      "ep": 6,
+      "guest": "Manon Macasaet",
+      "runtime": "8:24",
+      "published": "2026-09-28",
+      "youtube": {
+        "id": "QKJKAvmzOrw",
+        "views": 77488,
+        "url": "https://www.youtube.com/watch?v=QKJKAvmzOrw"
+      },
+      "x": {
+        "views": 71000
+      },
+      "image": "media/sm/ep06.jpg"
+    },
+    {
+      "ep": 7,
+      "guest": "Chase Rutherford",
+      "runtime": "9:16",
+      "published": "2026-10-05",
+      "youtube": {
+        "id": "j-DQtPL_x3o",
+        "views": 115383,
+        "url": "https://www.youtube.com/watch?v=j-DQtPL_x3o"
+      },
+      "x": {
+        "views": 11051853
+      },
+      "image": "media/sm/ep07.jpg"
+    },
+    {
+      "ep": 8,
+      "guest": "Ben Ganz",
+      "runtime": "10:49",
+      "published": "2026-10-12",
+      "youtube": {
+        "id": "o52a9syFc40",
+        "views": 91479,
+        "url": "https://www.youtube.com/watch?v=o52a9syFc40"
+      },
+      "x": {
+        "views": 11095230
+      },
+      "image": "media/sm/ep08.jpg"
+    }
+  ]
+}
