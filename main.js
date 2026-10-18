@@ -526,12 +526,20 @@ window.addEventListener('pointermove', (e) => {
     el.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') up() })
     el.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') down() })
   }
-  // touch: tapping the star toggles it
+  // touch (no hover): tapping the star or the peeking iPod raises it; tapping anywhere else lowers it
+  const touchUI = () => matchMedia('(hover: none)').matches
+  const lower = () => { ipod.classList.remove('up'); ipod.setAttribute('aria-hidden', 'true') }
   star.addEventListener('click', (e) => {
-    if (editing || !matchMedia('(hover: none)').matches) return
-    e.preventDefault()
-    ipod.classList.contains('up') ? ipod.classList.remove('up') : up()
+    if (editing || !touchUI()) return
+    e.preventDefault(); e.stopPropagation()
+    ipod.classList.contains('up') ? lower() : up()
   })
+  ipod.addEventListener('click', (e) => {
+    if (!touchUI()) return
+    e.stopPropagation()
+    if (!ipod.classList.contains('up')) up()
+  })
+  document.addEventListener('click', () => { if (touchUI() && ipod.classList.contains('up')) lower() })
 
   // ——— screen ———
   const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`

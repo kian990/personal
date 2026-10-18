@@ -608,6 +608,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
   user-select: none;
 }
 #ipod.up { transform: translateY(5%); }   /* bottom edge stays just off-screen, like a phone pulled from a pocket */
+body:is(.figma, .zora) #ipod { transform: translateY(104%); pointer-events: none; }   /* fully tucked away while a sheet is open */
 .ipod-body { display: block; width: 100%; height: auto; border-radius: 7% / 4.3%; }
 
 /* the LCD: covers the photographed screen and redraws the classic Now Playing view */
@@ -731,17 +732,25 @@ body.editing .el:active { cursor: grabbing; }
   #sound          { left: 10px; right: auto; bottom: 3px; }
 
   /* 005 sheet: letterhead in two columns, wider type */
-  .sheet { padding: 4em 5% 3em; font-size: 10.5px; overflow-y: auto; }
+  /* the sheet flows like a document on a phone: letterhead, then the list, then the gallery,
+     scrolling as one page (the desktop layout centres things in a fixed-height box) */
+  .sheet { display: block; padding: 4em 5% 3em; font-size: 10.5px; overflow-y: auto; }
+  .sm-close, .sm-jump { position: fixed; }       /* stay put while the sheet scrolls */
   .lh-row { grid-template-columns: 1fr 1fr; }
   .lh-subject { grid-column: 1 / 3; }
   .lh-logo { width: 60%; }
   .lh-dots { display: none; }
-  .sm-body { grid-template-columns: 1fr; gap: 2em 0; padding-top: 2em; }
-  .sm-left { justify-content: flex-start; }
+  .sm-body { display: block; flex: none; min-height: auto; padding-top: 2.5em; }
+  .sm-col { display: block; min-height: auto; }
+  .sm-left { margin-bottom: 3em; }
+  .sm-stack { max-width: none; }
   .ep-list { font-size: 1.15em; }
-  .name-list { font-size: 1.05em; }
+  .ep-list .ep-guest::after { content: none; }   /* no dashed leaders at phone width */
+  .name-list { font-size: 1.05em; column-gap: 1.5em; }
+  .ep-gallery { height: auto; }
+  #figma-panel .ep-frame { width: 100%; max-height: none; }
   #zora-panel .lh-logo { width: 50%; }
-  .zora-frame { flex: 0 0 auto; width: 70%; align-self: flex-start; }
+  .zora-frame { flex: none; width: 70%; max-height: none; margin: 0 auto; }
 
   /* nav tree: its own clear band under the title cluster */
   .tree {
