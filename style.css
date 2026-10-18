@@ -222,8 +222,8 @@ body.editing .coin { transform: perspective(900px) rotateY(0deg) !important; }
 /* ————— sound toggle ————— */
 #sound {
   position: fixed;
-  right: 16px;
-  bottom: 14px;
+  left: 16px;
+  bottom: 12px;
   z-index: 50;
   font: inherit;
   font-size: 11px;
