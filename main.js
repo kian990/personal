@@ -672,6 +672,9 @@ const THEMES = [
       // the coins' metallic back is a mask of the front: keep it in sync
       document.querySelector(`#${id} .back`)?.style.setProperty('--face', `url("${src}")`)
     }
+    // body.theme-<name> lets style.css recolour the live text per theme (e.g. the nav)
+    for (const t of THEMES) document.body.classList.remove(`theme-${t.name}`)
+    document.body.classList.add(`theme-${theme.name}`)
     if (theme.tile) {
       bgImage.style.backgroundImage = `url("${theme.tile}")`
       bgImage.style.backgroundSize = `${theme.tileSize}px`
