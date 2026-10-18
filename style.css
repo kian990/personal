@@ -499,7 +499,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 
 /* ——— 006 zora_profiles sheet: its own palette, swapped in through the letterhead variables ——— */
 #zora-panel {
-  --lh-blue: #d50c42;     /* type + rules: red */
+  --lh-blue: #b8b8ff;     /* type + rules: lilac */
   --lh-lilac: #d1b0b3;    /* dot field, dashes, list rule: dusty pink */
   --lh-slate: #de4500;    /* labels + numbers: orange */
   --zora-green: #94ff94;  /* hover + highlight */
