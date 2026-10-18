@@ -409,3 +409,52 @@ window.addEventListener('pointermove', (e) => {
   requestAnimationFrame(glisten)
 })(performance.now())
 
+
+
+// ————— film grain: animated static over the whole site (Virgil Abloh archive style).
+// a handful of noise frames are rendered once at half resolution, then cycled at a
+// film-like rate with a random nudge so the loop never reads as a pattern —————
+{
+  const GRAIN_SCALE = 0.5    // canvas pixels per screen pixel (pixelated up by CSS)
+  const GRAIN_FRAMES = 12    // pre-rendered frames in the loop
+  const GRAIN_FPS = 14       // how fast the static flickers
+  const canvas = document.getElementById('grain')
+  const ctx = canvas.getContext('2d', { alpha: true })
+  let frames = []
+  let w = 0, h = 0
+
+  function buildFrames() {
+    w = Math.max(1, Math.round(innerWidth * GRAIN_SCALE))
+    h = Math.max(1, Math.round(innerHeight * GRAIN_SCALE))
+    canvas.width = w
+    canvas.height = h
+    frames = []
+    for (let f = 0; f < GRAIN_FRAMES; f++) {
+      const img = ctx.createImageData(w, h)
+      const d = img.data
+      for (let i = 0; i < d.length; i += 4) {
+        // two randoms summed: softer, more film-like distribution than flat noise
+        const v = (Math.random() + Math.random()) * 127.5
+        d[i] = d[i + 1] = d[i + 2] = v
+        d[i + 3] = 255
+      }
+      frames.push(img)
+    }
+  }
+
+  let last = 0, idx = 0
+  function tick(now) {
+    if (now - last >= 1000 / GRAIN_FPS) {
+      last = now
+      idx = (idx + 1 + Math.floor(Math.random() * 3)) % frames.length   // skip around, no visible loop
+      ctx.putImageData(frames[idx], Math.floor(Math.random() * 6) - 3, Math.floor(Math.random() * 6) - 3)
+    }
+    requestAnimationFrame(tick)
+  }
+
+  buildFrames()
+  let resizeT
+  addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(buildFrames, 150) })
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) ctx.putImageData(frames[0], 0, 0)
+  else requestAnimationFrame(tick)
+}

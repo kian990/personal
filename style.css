@@ -539,6 +539,22 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
   align-self: center;
 }
 
+/* ————— film grain: a fixed static layer over everything (video, nav, white sheets).
+   --grain is the strength; the blend keeps it as texture rather than a grey wash ————— */
+:root { --grain: .22; }
+#grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: var(--grain);
+  mix-blend-mode: overlay;
+  image-rendering: pixelated;   /* grain is drawn at half resolution: chunkier, cheaper */
+}
+@media (prefers-reduced-motion: reduce) { #grain { opacity: calc(var(--grain) * .5); } }
+
 /* ————— edit mode ————— */
 body.editing .el { outline: 1px dashed rgba(255, 0, 128, .8); cursor: grab; }
 body.editing .el:active { cursor: grabbing; }
