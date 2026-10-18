@@ -10,8 +10,8 @@
     "episodes": 8,
     "runtime": "72:29",
     "youtubeViews": 1272264,
-    "xViews": 76860578,
-    "combinedViews": 78132842,
+    "xViews": 76931578,
+    "combinedViews": 78203842,
     "youtubeLikes": 14940,
     "xLikes": 15529,
     "xReposts": 1018
@@ -22,7 +22,7 @@
     { "ep": 3, "guest": "Zach Lieberman",               "runtime": "10:24", "published": "2026-09-07", "youtube": { "id": null, "views": 197768 }, "x": { "views": 12144092 } },
     { "ep": 4, "guest": "Aitana Picó",                  "runtime": "8:27",  "published": "2026-09-14", "youtube": { "id": null, "views": 148127 }, "x": { "views": 5972439 } },
     { "ep": 5, "guest": "Brent David Freaney",          "runtime": "10:18", "published": "2026-09-21", "youtube": { "id": null, "views": 182381 }, "x": { "views": 15563526 } },
-    { "ep": 6, "guest": "Manon Macasaet",               "runtime": "8:24",  "published": "2026-09-28", "youtube": { "id": null, "views": 77488 },  "x": { "views": null } },
+    { "ep": 6, "guest": "Manon Macasaet",               "runtime": "8:24",  "published": "2026-09-28", "youtube": { "id": null, "views": 77488 },  "x": { "views": 71000 } },
     { "ep": 7, "guest": "Chase Rutherford",             "runtime": "9:16",  "published": "2026-10-05", "youtube": { "id": null, "views": 115383 }, "x": { "views": 11051853 } },
     { "ep": 8, "guest": "Ben Ganz",                     "runtime": "10:49", "published": "2026-10-12", "youtube": { "id": null, "views": 91479 },  "x": { "views": 11095230 } }
   ]
