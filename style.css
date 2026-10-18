@@ -38,7 +38,7 @@ body.title-alt :is(#k-lines, #title-ian, #title-ludwig) { visibility: hidden; }
 /* per-theme colours for the live text (the nav tree); the overlays are recoloured PNGs */
 :root { --nav: #1a10d8; }
 body.theme-gingham-green { --nav: #d9468f; }   /* a deeper cut of the title's pink, for legibility */
-body.theme-bliss { --nav: #d9468f; }           /* same colours as gingham for now */
+body.theme-bliss { --nav: #1d5fd6; }           /* the sky's blue */
 /* gingham: the coin's back is cut diamond instead of brushed metal — the facets slide a little
    under the pointer, a hard white light band sweeps across them, and a faint rainbow fringe
    rides with it (same --sx/--sy/--ang the metal uses, so it glistens at rest too) */
