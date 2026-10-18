@@ -601,7 +601,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
   z-index: 60;                 /* over the stage + star, under the 005/006 sheets */
   width: clamp(220px, 21vw, 340px);
   container-type: inline-size;
-  transform: translateY(104%);
+  transform: translateY(91%);           /* at rest the top edge just peeks over the bottom of the screen */
   transition: transform .65s cubic-bezier(.22, 1, .36, 1);
   will-change: transform;
   filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .5));
