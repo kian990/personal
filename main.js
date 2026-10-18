@@ -446,10 +446,20 @@ window.addEventListener('pointermove', (e) => {
   const sx = ((1 - sheen.x) * 100 + drift * 100).toFixed(2) + '%'
   const sy = ((1 - sheen.y) * 100 - drift * 60).toFixed(2) + '%'
   const ang = (115 + (sheen.y - 0.5) * 70 + (sheen.x - 0.5) * 30 + drift * 40).toFixed(2) + 'deg'
+  const px = sheen.x * innerWidth, py = sheen.y * innerHeight
   for (const c of coins) {
     c.style.setProperty('--sx', sx)
     c.style.setProperty('--sy', sy)
     c.style.setProperty('--ang', ang)
+    // tilt toward the pointer (used by the diamond back): up to ±8° based on where the
+    // pointer sits relative to this piece's centre
+    if (c.classList.contains('flipped')) {
+      const r = c.getBoundingClientRect()
+      const dx = Math.max(-1, Math.min(1, (px - (r.left + r.width / 2)) / (r.width / 2)))
+      const dy = Math.max(-1, Math.min(1, (py - (r.top + r.height / 2)) / (r.height / 2)))
+      c.style.setProperty('--ty', (-dx * 8).toFixed(2) + 'deg')
+      c.style.setProperty('--tx', (dy * 8).toFixed(2) + 'deg')
+    }
   }
   requestAnimationFrame(glisten)
 })(performance.now())

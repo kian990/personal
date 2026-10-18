@@ -38,12 +38,23 @@ body.theme-gingham-green { --nav: #ffa6d9; }   /* the title's pink */
    rides with it (same --sx/--sy/--ang the metal uses, so it glistens at rest too) */
 body.theme-gingham-green .coin .back .metal {
   background:
+    /* a soft spot of light under the pointer, darker toward the edges: reads as a rounded stone */
+    radial-gradient(ellipse 60% 60% at var(--sx) var(--sy), rgba(255, 255, 255, .45), transparent 55%, rgba(10, 10, 40, .35) 130%),
+    /* the hard light band that sweeps across the facets */
     linear-gradient(var(--ang), transparent 38%, rgba(255, 255, 255, .55) 46%, #fff 50%, rgba(255, 255, 255, .55) 54%, transparent 62%),
+    /* dispersion fringe riding with it */
     linear-gradient(var(--ang), rgba(255, 110, 200, .35) 0%, rgba(110, 220, 255, .35) 50%, rgba(255, 240, 120, .35) 100%),
+    /* the facets themselves: one fixed scale on every piece (what ludwig had), and they don't slide */
     url("media/diamond.jpg");
-  background-size: 320% 320%, 420% 420%, 55% auto;
-  background-position: var(--sx) var(--sy), var(--sx) var(--sy), var(--sx) var(--sy);
-  background-blend-mode: screen, overlay, normal;
+  background-size: 100% 100%, 320% 320%, 420% 420%, calc(23.4 * var(--u)) auto;
+  background-position: 0 0, var(--sx) var(--sy), var(--sx) var(--sy), center;
+  background-blend-mode: soft-light, screen, overlay, normal;
+}
+/* the stone tilts a few degrees toward the pointer while flipped (on the back face itself, so it
+   answers the mouse immediately instead of riding the slow flip transition) */
+body.theme-gingham-green .coin .back { transition: transform .18s ease-out; }
+body.theme-gingham-green .coin.flipped .back {
+  transform: rotateY(calc(180deg + var(--ty, 0deg))) rotateX(var(--tx, 0deg));
 }
 body.theme-gingham-green .coin .back::before { background: #ffffff; }
 body.theme-gingham-green .coin .back::after  { background: #9a9ab0; }
