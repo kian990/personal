@@ -441,7 +441,7 @@ body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
   letter-spacing: 0;
   color: var(--lh-lilac);
 }
-.ep-list .ep-views { font-variant-numeric: tabular-nums; }
+.ep-list .ep-views { font-variant-numeric: tabular-nums; color: #ffb852; }
 .ep-list .ep-total { margin-top: .9em; padding-top: .5em; border-top: 1px solid var(--lh-lilac); }
 .ep-list .ep-total .ep-guest::after { content: none; }
 /* right column: placeholder image frame, click to advance */
