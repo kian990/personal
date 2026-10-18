@@ -501,7 +501,7 @@ body:is(.figma, .zora) :is(.stage, .tree, #sound) { opacity: 0; pointer-events: 
 #zora-panel {
   --lh-blue: #b8b8ff;     /* type + rules: lilac */
   --lh-lilac: #d1b0b3;    /* dot field, dashes, list rule: dusty pink */
-  --lh-slate: #de4500;    /* labels + numbers: orange */
+  --lh-slate: #5c7287;    /* labels + numbers: slate */
   --zora-green: #94ff94;  /* hover + highlight */
 }
 #zora-panel .lh-logo { width: 26%; }
