@@ -319,8 +319,9 @@ document.querySelector('.tree a.figma-link')?.addEventListener('click', openFigm
       const row = (n, guest, views, cls = '') =>
         `<li class="${cls}"><span class="ep-n">${n}</span><span class="ep-guest">${guest}</span><span class="ep-views">${views}</span></li>`
       list.innerHTML =
-        episodes.map((ep) => row(two(ep.ep), ep.guest.replace(/\s*\(.*?\)/g, ''), fmt(total(ep)))).join('') +
-        row('&nbsp;&nbsp;', 'TOTAL VIEWS', fmt(episodes.reduce((s, ep) => s + total(ep), 0)), 'ep-total')
+        // names as slugs: lower case, words joined with _ (thom_bettridge), parentheticals dropped
+        episodes.map((ep) => row(two(ep.ep), ep.guest.replace(/\s*\(.*?\)/g, '').trim().toLowerCase().replace(/\s+/g, '_'), fmt(total(ep)))).join('') +
+        row('&nbsp;&nbsp;', 'total_views', fmt(episodes.reduce((s, ep) => s + total(ep), 0)), 'ep-total')
       slides = episodes.map(() => null)
       show(0, false)
     })

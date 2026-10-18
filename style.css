@@ -430,7 +430,7 @@ body.figma :is(.stage, .tree, #sound) { opacity: 0; pointer-events: none; }
 }
 .ep-list li { display: flex; gap: 1.2em; align-items: baseline; }
 .ep-list .ep-n { color: var(--lh-slate); }
-.ep-list .ep-guest { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.ep-list .ep-guest { flex: 1; overflow: hidden; text-overflow: ellipsis; text-transform: lowercase; }
 .ep-list .ep-guest::after {
   content: var(--dashes);
   display: inline-block;
