@@ -698,7 +698,27 @@ const THEMES = [
     }
     return assets.get(theme.name)
   }
-  addEventListener('load', () => setTimeout(() => THEMES.forEach(assetsFor), 1500))
+  // the three full-screen canvases live for the whole session (allocating them per switch cost a frame)
+  const scene = document.createElement('canvas'), mask = document.createElement('canvas'), base = document.createElement('canvas')
+  const sizeCanvases = (W, H) => { for (const c of [fx, scene, mask, base]) if (c.width !== W || c.height !== H) { c.width = W; c.height = H } }
+  // after the images are in, draw every theme's scene once off-screen: that uploads the textures and
+  // builds the coin canvases, so the first real switch runs as smoothly as the later ones
+  async function warm() {
+    const dpr = Math.min(devicePixelRatio || 1, 2)
+    const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
+    sizeCanvases(W, H)
+    const sctx = scene.getContext('2d')
+    for (const theme of THEMES) {
+      const { tile, imgs, gem, ipodImg, cover, titleImg } = await assetsFor(theme)
+      let pat = null
+      if (tile) { pat = sctx.createPattern(tile, 'repeat'); pat.setTransform(new DOMMatrix().scale((theme.tileSize * dpr) / tile.width)) }
+      drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg)
+      fx.getContext('2d').drawImage(scene, 0, 0)   // touch the visible canvas too (it's display:none, nothing shows)
+      await new Promise((r) => setTimeout(r, 60))
+    }
+    fx.getContext('2d').clearRect(0, 0, W, H)
+  }
+  addEventListener('load', () => setTimeout(() => { THEMES.forEach(assetsFor); warm().catch(() => {}) }, 1500))
 
   // the live text (nav) is coloured by style.css per body.theme-<name>
   const setThemeClass = (theme) => {
@@ -735,22 +755,69 @@ const THEMES = [
   // matches style.css (.coin .back on that theme) so the hand-off is seamless
   const COIN_IDS = ['k-lines', 'title-ian', 'title-ludwig']
   const FACET_UNITS = 23.4   // background-size of the facets, in design units (as in style.css)
-  function drawCoinBack(ctx, img, r, dpr, gem) {
-    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr))
-    const tmp = document.createElement('canvas'); tmp.width = w; tmp.height = h
-    const t = tmp.getContext('2d')
-    const rim = 0.12 * unit() * dpr
-    const stamp = (fill, dx, dy) => {
-      t.globalCompositeOperation = 'source-over'; t.clearRect(0, 0, w, h); t.drawImage(img, 0, 0, w, h)
-      t.globalCompositeOperation = 'source-in'; t.fillStyle = fill; t.fillRect(0, 0, w, h)
-      ctx.drawImage(tmp, r.left * dpr + dx, r.top * dpr + dy)
+  // per coin: the parts that don't change during a switch (rim lights, facets cut to the artwork)
+  // are rendered once; only the three light layers are re-laid each update
+  const coinCache = {}
+  function coinPrep(coin, img, w, h, dpr, gem) {
+    let c = coinCache[coin.id]
+    if (c && c.w === w && c.h === h) return c
+    const rim = Math.round(0.12 * unit() * dpr)
+    const mk = (cw, ch) => { const k = document.createElement('canvas'); k.width = cw; k.height = ch; return k }
+    const rims = mk(w + 2 * rim, h + 2 * rim), stone = mk(w, h), tmp = mk(w, h)
+    const rc = rims.getContext('2d')
+    for (const [fill, dx, dy] of [['#ffffff', 0, 0], ['#9a9ab0', 2 * rim, 2 * rim]]) {
+      const t = tmp.getContext('2d')
+      t.globalCompositeOperation = 'source-over'; t.clearRect(0, 0, w, h); t.fillStyle = fill; t.fillRect(0, 0, w, h)
+      t.globalCompositeOperation = 'destination-in'; t.drawImage(img, 0, 0, w, h)
+      rc.drawImage(tmp, dx, dy)
     }
-    stamp('#ffffff', -rim, -rim)
-    stamp('#9a9ab0', rim, rim)
+    const s = stone.getContext('2d')
     const tileW = FACET_UNITS * unit() * dpr
-    const pat = t.createPattern(gem, 'repeat')
+    const pat = s.createPattern(gem, 'repeat')
     pat.setTransform(new DOMMatrix().translate((w - tileW) / 2, (h - tileW * gem.height / gem.width) / 2).scale(tileW / gem.width))
-    stamp(pat, 0, 0)
+    s.fillStyle = pat; s.fillRect(0, 0, w, h)
+    s.globalCompositeOperation = 'destination-in'; s.drawImage(img, 0, 0, w, h)
+    return (coinCache[coin.id] = { w, h, rim, rims, stone, tmp })
+  }
+  function drawCoinBack(ctx, img, r, dpr, gem, coin) {
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr))
+    const { rim, rims, stone, tmp } = coinPrep(coin, img, w, h, dpr, gem)
+    const x = r.left * dpr, y = r.top * dpr
+    ctx.drawImage(rims, x - rim, y - rim)
+    // the live sheen position + angle (set on each coin every frame by the glisten loop)
+    const v = (name, fallback) => { const n = parseFloat(coin.style.getPropertyValue(name)); return Number.isFinite(n) ? n : fallback }
+    const sx = v('--sx', 50) / 100, sy = v('--sy', 50) / 100, ang = v('--ang', 115)
+    const t = tmp.getContext('2d')
+    t.globalCompositeOperation = 'source-over'; t.clearRect(0, 0, w, h); t.drawImage(stone, 0, 0)
+    // CSS linear-gradient(ang) on a box `size`× the element, positioned at sx / sy
+    const lin = (size, stops) => {
+      const bw = w * size, bh = h * size, bx = (w - bw) * sx, by = (h - bh) * sy
+      const th = ang * Math.PI / 180, dx = Math.sin(th), dy = -Math.cos(th)
+      const L = Math.abs(bw * dx) + Math.abs(bh * dy), cx = bx + bw / 2, cy = by + bh / 2
+      const g = t.createLinearGradient(cx - dx * L / 2, cy - dy * L / 2, cx + dx * L / 2, cy + dy * L / 2)
+      for (const [p, c] of stops) g.addColorStop(p, c)
+      t.fillStyle = g; t.fillRect(0, 0, w, h)
+    }
+    // same layers as style.css, bottom to top: dispersion fringe (overlay), light band (screen), spot + vignette (soft-light)
+    t.globalCompositeOperation = 'overlay'
+    lin(4.2, [[0, 'rgba(255,110,200,.35)'], [.5, 'rgba(110,220,255,.35)'], [1, 'rgba(255,240,120,.35)']])
+    t.globalCompositeOperation = 'screen'
+    lin(3.2, [[0, 'rgba(255,255,255,0)'], [.38, 'rgba(255,255,255,0)'], [.46, 'rgba(255,255,255,.55)'], [.5, '#fff'], [.54, 'rgba(255,255,255,.55)'], [.62, 'rgba(255,255,255,0)'], [1, 'rgba(255,255,255,0)']])
+    t.globalCompositeOperation = 'soft-light'
+    t.save(); t.translate(w * sx, h * sy); t.scale(w * .6, h * .6)
+    const rg = t.createRadialGradient(0, 0, 0, 0, 0, 1)
+    rg.addColorStop(0, 'rgba(255,255,255,.45)'); rg.addColorStop(.55, 'rgba(255,255,255,0)'); rg.addColorStop(1, 'rgba(10,10,40,.21)')
+    t.fillStyle = rg; t.fillRect(-4, -4, 8, 8); t.restore()
+    // the blends spill outside the letters onto transparent pixels: cut back to the artwork
+    t.globalCompositeOperation = 'destination-in'; t.drawImage(img, 0, 0, w, h)
+    ctx.drawImage(tmp, x, y)
+  }
+  // just the coins (over an already-drawn static scene)
+  function drawCoins(ctx, dpr, imgs, gem) {
+    for (const id of COIN_IDS) {
+      const r = document.getElementById(id).getBoundingClientRect()
+      if (r.width && r.height) drawCoinBack(ctx, imgs[id], r, dpr, gem, document.getElementById(id))
+    }
   }
 
   // the incoming scene: background (tile, or the live video frame) + every overlay at its on-screen box
@@ -761,7 +828,7 @@ const THEMES = [
     const s = Math.max(W / iw, H / ih)
     ctx.drawImage(im, (W - iw * s) / 2, (H - ih * s) / 2, iw * s, ih * s)
   }
-  function drawScene(ctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg) {
+  function drawScene(ctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg, skipCoins = false) {
     if (tile) {
       ctx.fillStyle = pat; ctx.fillRect(0, 0, W, H)
     } else if (cover) {
@@ -776,9 +843,10 @@ const THEMES = [
     }
     for (const id of OVERLAY_IDS) {
       if (titleImg && COIN_IDS.includes(id)) continue   // the title is one image on this theme (drawn below)
+      if (skipCoins && COIN_IDS.includes(id)) continue   // drawn separately, per frame
       const r = document.getElementById(id).getBoundingClientRect()
       if (!r.width || !r.height) continue
-      if (theme.backFirst && gem && COIN_IDS.includes(id)) drawCoinBack(ctx, imgs[id], r, dpr, gem)
+      if (theme.backFirst && gem && COIN_IDS.includes(id)) drawCoinBack(ctx, imgs[id], r, dpr, gem, document.getElementById(id))
       else ctx.drawImage(imgs[id], r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr)
     }
     if (titleImg) {
@@ -802,9 +870,7 @@ const THEMES = [
       document.body.classList.add('switching')
       const dpr = Math.min(devicePixelRatio || 1, 2)   // match the page exactly, so nothing shifts when the canvas comes away
       const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr)
-      fx.width = W; fx.height = H
-      const scene = document.createElement('canvas'); scene.width = W; scene.height = H
-      const mask = document.createElement('canvas'); mask.width = W; mask.height = H
+      sizeCanvases(W, H)
       const sctx = scene.getContext('2d'), mctx = mask.getContext('2d'), ctx = fx.getContext('2d')
       let pat = null
       if (tile) {
@@ -821,13 +887,20 @@ const THEMES = [
       // the nav sits above the canvas, so its colour flips the moment the sweep reaches it
       const navAt = (tree.getBoundingClientRect().left / innerWidth) * MOSAIC_SWEEP + MOSAIC_NOISE * 0.5
       let navDone = false
-      if (tile || cover) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg)   // static scene: draw once
+      const liveCoins = theme.backFirst && gem
+      if (tile || cover) {
+        // static scene: drawn once (without the coins on a back-first theme, which are re-laid live)
+        drawScene(liveCoins ? base.getContext('2d') : sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg, liveCoins)
+        if (liveCoins) { sctx.drawImage(base, 0, 0); drawCoins(sctx, dpr, imgs, gem) }
+      }
+      let frameNo = 0
       fx.classList.add('on')
       await new Promise((done) => {
         const t0 = performance.now()
         const frame = (now) => {
           const t = (now - t0) / 1000
-          if (!tile && !cover) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg)   // live video frame: redraw
+          if (!tile && !cover) drawScene(sctx, W, H, dpr, theme, tile, pat, imgs, gem, ipodImg, cover, titleImg)   // live video frame
+          else if (liveCoins && frameNo++ % 2 === 0) { sctx.drawImage(base, 0, 0); drawCoins(sctx, dpr, imgs, gem) }   // the sheen drifts slowly: every other frame is plenty
           mctx.clearRect(0, 0, W, H); mctx.fillStyle = '#000'
           for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
             const k = (t - at[r * cols + c]) / MOSAIC_POP
@@ -848,7 +921,7 @@ const THEMES = [
       current = i
       // keep the canvas up until the swapped-in overlays have decoded and painted (no blank flash)
       await Promise.all(OVERLAY_IDS.map((id) => decoded(imgOf(id))))
-      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
+      await new Promise((r) => requestAnimationFrame(r))
     } catch (e) {
       apply(theme); current = i   // if an image fails to load, just switch without the effect
     } finally {
